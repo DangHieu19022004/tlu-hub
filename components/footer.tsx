@@ -1,89 +1,100 @@
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Facebook, Mail, Phone } from "lucide-react"
+import Image from "next/image"
+import { Mail, Globe } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {/* About */}
-          <div>
-            <div className="mb-4 flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-                <span className="text-xl font-bold text-primary-foreground">TLU</span>
-              </div>
-              <span className="text-xl font-bold">HUB</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Nền tảng học tập trực tuyến hàng đầu dành cho sinh viên TLU. Cung cấp tài liệu, khóa học chất lượng cao.
-            </p>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold">Liên Kết</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/" className="text-muted-foreground transition-colors hover:text-foreground">
-                  Trang Chủ
-                </Link>
-              </li>
-              <li>
-                <Link href="/courses" className="text-muted-foreground transition-colors hover:text-foreground">
-                  Khóa Học
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-muted-foreground transition-colors hover:text-foreground">
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="/resources" className="text-muted-foreground transition-colors hover:text-foreground">
-                  Tài Liệu
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold">Liên Hệ</h3>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-center gap-2 text-muted-foreground">
-                <Mail className="h-4 w-4" />
-                <span>contact@tluhub.edu.vn</span>
-              </li>
-              <li className="flex items-center gap-2 text-muted-foreground">
-                <Phone className="h-4 w-4" />
-                <span>024 1234 5678</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href="https://facebook.com" target="_blank">
-                    <Facebook className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold">Nhận Tin Tức</h3>
-            <p className="mb-4 text-sm text-muted-foreground">Đăng ký để nhận thông tin về khóa học mới</p>
-            <div className="flex gap-2">
-              <Input type="email" placeholder="Email của bạn" />
-              <Button>Đăng Ký</Button>
+    <footer className="bg-white border-t border-red-50 py-12">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-10 flex flex-col md:flex-row justify-between gap-10">
+        <div className="flex flex-col gap-5 max-w-xs">
+          <div className="flex items-center gap-2">
+            <div className="h-10 flex items-center justify-center">
+              <Image
+                alt="TLU Hub Footer Logo"
+                src="/logo.png"
+                width={120}
+                height={40}
+                className="object-contain"
+              />
             </div>
           </div>
+          <p className="text-sm text-gray-500 font-medium">
+            Nền tảng chia sẻ tài liệu phi lợi nhuận dành cho sinh viên Đại học Thủy Lợi. Cùng nhau học tập, cùng nhau tiến bộ.
+          </p>
+          <div className="flex gap-3 mt-2">
+            <Link
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-blue-600 transition-all"
+              href="#"
+            >
+              <Globe className="w-5 h-5" />
+            </Link>
+            <Link
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-primary transition-all"
+              href="#"
+            >
+              <Mail className="w-5 h-5" />
+            </Link>
+          </div>
         </div>
-
-        <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 TLU HUB. All rights reserved.</p>
+        
+        <div className="flex flex-wrap gap-16">
+          <div className="flex flex-col gap-4">
+            <h4 className="font-bold text-foreground text-lg">
+              Khám phá
+            </h4>
+            <Link
+              className="text-sm text-gray-600 hover:text-primary font-medium"
+              href="/resources"
+            >
+              Tài liệu mới
+            </Link>
+            <Link
+              className="text-sm text-gray-600 hover:text-primary font-medium"
+              href="/courses"
+            >
+              Môn học phổ biến
+            </Link>
+            <Link
+              className="text-sm text-gray-600 hover:text-primary font-medium"
+              href="/resources"
+            >
+              Bảng xếp hạng
+            </Link>
+          </div>
+          
+          <div className="flex flex-col gap-4">
+            <h4 className="font-bold text-foreground text-lg">
+              Hỗ trợ
+            </h4>
+            <Link
+              className="text-sm text-gray-600 hover:text-primary font-medium"
+              href="/resources"
+            >
+              Hướng dẫn đăng tải
+            </Link>
+            <Link
+              className="text-sm text-gray-600 hover:text-primary font-medium"
+              href="/blog"
+            >
+              Quy định cộng đồng
+            </Link>
+            <Link
+              className="text-sm text-gray-600 hover:text-primary font-medium"
+              href="/contact"
+            >
+              Liên hệ
+            </Link>
+          </div>
         </div>
+      </div>
+      
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-10 mt-12 pt-8 border-t border-gray-100 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
+        <p className="text-xs text-gray-400 font-medium">
+          © 2024 TLU Hub. Designed for Students.
+        </p>
+        <p className="text-xs text-gray-400 font-medium mt-2 md:mt-0">
+          Made with ❤️ by TLU Students
+        </p>
       </div>
     </footer>
   )

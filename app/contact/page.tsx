@@ -173,8 +173,8 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <p className="font-medium">Địa chỉ</p>
-                        <p className="text-sm text-muted-foreground">Đại học Thăng Long</p>
-                        <p className="text-sm text-muted-foreground">Nghiêm Xuân Yêm, Đại Kim, Hoàng Mai, Hà Nội</p>
+                        <p className="text-sm text-muted-foreground">Trường Đại học Thủy Lợi</p>
+                        <p className="text-sm text-muted-foreground">175 Tây Sơn, Đống Đa, Hà Nội</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">

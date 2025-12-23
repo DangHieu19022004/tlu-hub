@@ -1,12 +1,15 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Menu, X } from "lucide-react"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { cn } from "@/lib/utils"
+import { AuthButtons } from "@/components/auth-buttons"
+import { AuthButtonsSkeleton } from "@/components/auth-buttons-skeleton"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -18,74 +21,67 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <div className="container mx-auto px-4">
+    <header className="sticky top-0 z-50 w-full border-b border-red-50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-sm">
+      <div className="container mx-auto px-4 max-w-[1200px]">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-                <span className="text-xl font-bold text-white">TLU</span>
-              </div>
-              <span className="text-xl font-bold text-foreground">TLU HUB</span>
+            <div className="h-12 flex items-center justify-center">
+              <Image 
+                src="/logo.png" 
+                alt="TLU Hub Logo" 
+                width={120} 
+                height={48} 
+                className="object-contain"
+                priority
+              />
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-6 md:flex">
+          <nav className="hidden items-center gap-8 md:flex">
             <Link
               href="/"
               className={cn(
-                "relative text-sm font-medium transition-colors hover:text-primary pb-1",
+                "text-sm font-bold transition-colors",
                 isActive("/") && pathname === "/"
-                  ? "text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary"
-                  : "text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform",
+                  ? "text-primary"
+                  : "text-foreground hover:text-primary",
               )}
             >
-              Trang Chủ
-            </Link>
-            <Link
-              href="/courses"
-              className={cn(
-                "relative text-sm font-medium transition-colors hover:text-primary pb-1",
-                isActive("/courses")
-                  ? "text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary"
-                  : "text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform",
-              )}
-            >
-              Khóa Học
-            </Link>
-            <Link
-              href="/blog"
-              className={cn(
-                "relative text-sm font-medium transition-colors hover:text-primary pb-1",
-                isActive("/blog")
-                  ? "text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary"
-                  : "text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform",
-              )}
-            >
-              Blog
+              Trang chủ
             </Link>
             <Link
               href="/resources"
               className={cn(
-                "relative text-sm font-medium transition-colors hover:text-primary pb-1",
+                "text-sm font-medium transition-colors",
                 isActive("/resources")
-                  ? "text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary"
-                  : "text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform",
+                  ? "text-primary"
+                  : "text-foreground hover:text-primary",
               )}
             >
-              Tài Liệu
+              Tài liệu
+            </Link>
+            <Link
+              href="/courses"
+              className={cn(
+                "text-sm font-medium transition-colors",
+                isActive("/courses")
+                  ? "text-primary"
+                  : "text-foreground hover:text-primary",
+              )}
+            >
+              Đăng tải
             </Link>
             <Link
               href="/contact"
               className={cn(
-                "relative text-sm font-medium transition-colors hover:text-primary pb-1",
+                "text-sm font-medium transition-colors",
                 isActive("/contact")
-                  ? "text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary"
-                  : "text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform",
+                  ? "text-primary"
+                  : "text-foreground hover:text-primary",
               )}
             >
-              Liên Hệ
+              Giới thiệu
             </Link>
           </nav>
 
@@ -96,12 +92,9 @@ export function Header() {
               <Input type="search" placeholder="Tìm kiếm..." className="w-64 pl-9" />
             </div>
             <div className="hidden items-center gap-2 md:flex">
-              <Button variant="ghost" asChild>
-                <Link href="/login">Đăng Nhập</Link>
-              </Button>
-              <Button asChild className="shadow-sm">
-                <Link href="/register">Đăng Ký</Link>
-              </Button>
+              <Suspense fallback={<AuthButtonsSkeleton />}>
+                <AuthButtons />
+              </Suspense>
             </div>
             <Button
               variant="ghost"
@@ -128,6 +121,15 @@ export function Header() {
                 Trang Chủ
               </Link>
               <Link
+                href="/resources"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  isActive("/resources") ? "text-primary font-semibold" : "text-foreground",
+                )}
+              >
+                Tài Liệu
+              </Link>
+              <Link
                 href="/courses"
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-primary",
@@ -146,15 +148,6 @@ export function Header() {
                 Blog
               </Link>
               <Link
-                href="/resources"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  isActive("/resources") ? "text-primary font-semibold" : "text-foreground",
-                )}
-              >
-                Tài Liệu
-              </Link>
-              <Link
                 href="/contact"
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-primary",
@@ -164,12 +157,7 @@ export function Header() {
                 Liên Hệ
               </Link>
               <div className="flex flex-col gap-2 pt-4">
-                <Button variant="outline" asChild className="w-full bg-transparent">
-                  <Link href="/login">Đăng Nhập</Link>
-                </Button>
-                <Button asChild className="w-full">
-                  <Link href="/register">Đăng Ký</Link>
-                </Button>
+                <AuthButtons />
               </div>
             </nav>
           </div>

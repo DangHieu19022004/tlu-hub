@@ -125,16 +125,16 @@ export function AIChatbot() {
     <>
       {/* Chat Button */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50">
           {showTooltip && (
-            <div className="absolute bottom-full right-0 mb-2 w-64 rounded-lg bg-white p-3 shadow-lg border border-border animate-in fade-in slide-in-from-bottom-2">
+            <div className="absolute bottom-full right-0 mb-2 w-56 md:w-64 rounded-lg bg-white p-3 shadow-lg border border-border animate-in fade-in slide-in-from-bottom-2">
               <p className="text-sm text-foreground">Xin chào, tôi là TLU Assistant, tôi có thể giúp gì cho bạn?</p>
               <div className="absolute bottom-0 right-6 h-0 w-0 translate-y-full border-8 border-transparent border-t-white"></div>
             </div>
           )}
           <Button
             size="lg"
-            className="h-20 w-20 rounded-full shadow-lg transition-all hover:scale-110 p-3 overflow-hidden bg-blue-500"
+            className="h-16 w-16 md:h-20 md:w-20 rounded-full shadow-lg transition-all hover:scale-110 p-3 overflow-hidden bg-blue-500"
             onClick={handleOpenChat}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
@@ -146,10 +146,10 @@ export function AIChatbot() {
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 z-50 flex h-[600px] w-[400px] flex-col shadow-2xl">
+        <Card className="fixed inset-x-0 bottom-0 md:bottom-6 md:right-6 md:left-auto z-50 flex h-[100dvh] md:h-[600px] w-full md:w-[400px] flex-col shadow-2xl md:rounded-lg rounded-none">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b border-border pb-4">
             <div className="flex items-center gap-2">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 overflow-hidden p-2">
+              <div className="flex h-10 w-10 md:h-14 md:w-14 items-center justify-center rounded-full bg-blue-500 overflow-hidden p-2">
                 <Image
                   src="/chatbot.png"
                   alt="TLU Assistant"
@@ -159,7 +159,7 @@ export function AIChatbot() {
                 />
               </div>
               <div>
-                <CardTitle className="text-lg">TLU Assistant</CardTitle>
+                <CardTitle className="text-base md:text-lg">TLU Assistant</CardTitle>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
@@ -174,7 +174,7 @@ export function AIChatbot() {
             </Button>
           </CardHeader>
 
-          <CardContent className="flex flex-1 flex-col gap-4 overflow-hidden p-4">
+          <CardContent className="flex flex-1 flex-col gap-4 overflow-hidden p-3 md:p-4">
             {/* Messages */}
             <div className="flex-1 space-y-4 overflow-y-auto">
               {messages.map((message) => (
@@ -189,7 +189,7 @@ export function AIChatbot() {
                   )}
                   <div
                     className={cn(
-                      "max-w-[80%] rounded-2xl px-4 py-2",
+                      "max-w-[75%] md:max-w-[80%] rounded-2xl px-3 md:px-4 py-2",
                       message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
                     )}
                   >
@@ -226,7 +226,7 @@ export function AIChatbot() {
                     <Badge
                       key={index}
                       variant="outline"
-                      className="cursor-pointer transition-colors hover:bg-accent"
+                      className="cursor-pointer transition-colors hover:bg-accent text-xs"
                       onClick={() => handleSend(question)}
                     >
                       <Sparkles className="mr-1 h-3 w-3" />

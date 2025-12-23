@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
 import { Header } from "@/components/header"
@@ -5,9 +7,13 @@ import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Download, Eye } from "lucide-react"
+import { Download, Eye, Search } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { useState, useEffect } from "react"
+import { api } from "@/lib/api"
 
-const resources = [
+// FAKE DATA - Keep as fallback
+const MOCK_RESOURCES = [
   {
     id: 1,
     title: "Slide Bài Giảng - Lập Trình Hướng Đối Tượng",
@@ -61,6 +67,40 @@ const resources = [
 ]
 
 export default function ResourcesPage() {
+  const [resources, setResources] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchKeyword, setSearchKeyword] = useState("")
+
+  useEffect(() => {
+    async function loadResources() {
+      setLoading(true)
+      try {
+        const docs = await api.searchDocuments(searchKeyword)
+        if (docs && Array.isArray(docs)) {
+          setResources(docs)
+        } else if (docs && docs.results) {
+          setResources(docs.results)
+        } else {
+          setResources(MOCK_RESOURCES)
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn("Failed to load resources, using fallback", err)
+        setResources(MOCK_RESOURCES)
+      } finally {
+        setLoading(false)
+      }
+    }
+    void loadResources()
+  }, [searchKeyword])
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const keyword = formData.get("search") as string
+    setSearchKeyword(keyword)
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -69,21 +109,46 @@ export default function ResourcesPage() {
         <section className="border-b border-border bg-card py-12">
           <div className="container mx-auto max-w-7xl px-4">
             <h1 className="mb-4 text-balance text-4xl font-bold">Tài Liệu Học Tập</h1>
-            <p className="text-pretty text-lg text-muted-foreground">
+            <p className="text-pretty text-lg text-muted-foreground mb-6">
               Truy cập tài liệu học tập miễn phí và trả phí chất lượng cao
             </p>
+            
+            {/* Search Box */}
+            <form onSubmit={handleSearch} className="max-w-2xl">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  name="search"
+                  type="text"
+                  placeholder="Tìm kiếm tài liệu..."
+                  className="pl-10 h-12"
+                  defaultValue={searchKeyword}
+                />
+                <Button type="submit" className="absolute right-1 top-1/2 -translate-y-1/2">
+                  Tìm kiếm
+                </Button>
+              </div>
+            </form>
           </div>
         </section>
 
-        {/* Resources Grid */}
+        {loading ? (
+          <section className="py-16 lg:py-24">
+            <div className="container mx-auto max-w-7xl px-4 flex justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+          </section>
+        ) : (
+          <>
+            {/* Resources Grid */}
         <section className="py-16 lg:py-24">
           <div className="container mx-auto max-w-7xl px-4">
             <div className="mb-12">
               <h2 className="text-2xl font-bold mb-6">Tài Liệu Miễn Phí</h2>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {resources
-                  .filter((r) => r.isFree)
-                  .map((resource) => (
+                  .filter((r: any) => r.isFree)
+                  .map((resource: any) => (
                     <Card
                       key={resource.id}
                       className="group hover:shadow-lg transition-all duration-300 border-gray-200 overflow-hidden"
@@ -147,8 +212,8 @@ export default function ResourcesPage() {
               <h2 className="text-2xl font-bold mb-6">Tài Liệu Trả Phí</h2>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {resources
-                  .filter((r) => !r.isFree)
-                  .map((resource) => (
+                  .filter((r: any) => !r.isFree)
+                  .map((resource: any) => (
                     <Card
                       key={resource.id}
                       className="group hover:shadow-lg transition-all duration-300 border-gray-200 overflow-hidden"
@@ -207,6 +272,8 @@ export default function ResourcesPage() {
             </div>
           </div>
         </section>
+          </>
+        )}
       </main>
       <Footer />
     </div>

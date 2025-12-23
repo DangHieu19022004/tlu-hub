@@ -3,32 +3,32 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Updated theme to light blue color scheme inspired by EduPress template */
+/* TLU Hub Theme - Inspired by new logo colors */
 :root {
-  --background: oklch(0.99 0 0);
-  --foreground: oklch(0.2 0.02 255);
+  --background: oklch(0.99 0.01 10);
+  --foreground: oklch(0.15 0.02 10);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.02 255);
+  --card-foreground: oklch(0.15 0.02 10);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.02 255);
-  --primary: oklch(0.55 0.18 250);
+  --popover-foreground: oklch(0.15 0.02 10);
+  --primary: oklch(0.6 0.2 10);
   --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.96 0.01 250);
-  --secondary-foreground: oklch(0.2 0.02 255);
-  --muted: oklch(0.97 0.005 250);
-  --muted-foreground: oklch(0.5 0.02 255);
-  --accent: oklch(0.65 0.15 220);
+  --secondary: oklch(0.7 0.12 220);
+  --secondary-foreground: oklch(0.15 0.02 10);
+  --muted: oklch(0.97 0.005 10);
+  --muted-foreground: oklch(0.5 0.02 10);
+  --accent: oklch(0.5 0.22 10);
   --accent-foreground: oklch(0.99 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.92 0.005 250);
-  --input: oklch(0.92 0.005 250);
-  --ring: oklch(0.55 0.18 250);
-  --chart-1: oklch(0.55 0.18 250);
-  --chart-2: oklch(0.65 0.15 220);
-  --chart-3: oklch(0.7 0.12 200);
-  --chart-4: oklch(0.6 0.16 240);
-  --chart-5: oklch(0.5 0.2 260);
+  --border: oklch(0.95 0.01 10);
+  --input: oklch(0.92 0.005 10);
+  --ring: oklch(0.6 0.2 10);
+  --chart-1: oklch(0.6 0.2 10);
+  --chart-2: oklch(0.7 0.12 220);
+  --chart-3: oklch(0.75 0.12 35);
+  --chart-4: oklch(0.65 0.16 280);
+  --chart-5: oklch(0.55 0.2 150);
   --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
