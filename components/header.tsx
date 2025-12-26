@@ -3,7 +3,6 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Search, Menu, X } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useState, Suspense } from "react"
@@ -87,10 +86,7 @@ export function Header() {
 
           {/* Search & Auth */}
           <div className="flex items-center gap-4">
-            <div className="relative hidden lg:block">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input type="search" placeholder="Tìm kiếm..." className="w-64 pl-9" />
-            </div>
+            
             <div className="hidden items-center gap-2 md:flex">
               <Suspense fallback={<AuthButtonsSkeleton />}>
                 <AuthButtons />
