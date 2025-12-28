@@ -17,7 +17,7 @@ export function AuthButtons() {
   // Prevent hydration mismatch - render same content on server and initial client render
   if (!mounted) {
     return (
-      <Button variant="ghost" className="shadow-sm bg-teal-200" asChild>
+      <Button className="shadow-sm bg-primary text-primary-foreground hover:bg-accent hover:text-white font-semibold" asChild>
         <Link href="/login">Đăng Nhập</Link>
       </Button>
     )
@@ -28,7 +28,7 @@ export function AuthButtons() {
   }
 
   return (
-    <Button variant="ghost" className="shadow-sm bg-teal-200" asChild>
+    <Button className="shadow-sm bg-primary text-primary-foreground hover:bg-accent hover:text-white font-semibold" asChild>
       <Link href="/login">Đăng Nhập</Link>
     </Button>
   )

@@ -27,8 +27,8 @@ export function UnderDevelopment() {
           }}
           className="relative mx-auto w-32 h-32 mb-8"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full blur-xl opacity-60" />
-          <div className="relative bg-gradient-to-br from-blue-400 to-purple-500 rounded-full p-8 shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-xl opacity-60" />
+          <div className="relative bg-gradient-to-br from-primary to-accent rounded-full p-8 shadow-2xl">
             <Construction className="h-16 w-16 text-white" />
           </div>
         </motion.div>
@@ -40,10 +40,10 @@ export function UnderDevelopment() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mb-6"
         >
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-2 rounded-full border border-blue-100 mb-4">
-            <Sparkles className="h-4 w-4 text-blue-500" />
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-accent/10 px-6 py-2 rounded-full border border-primary/20 mb-4">
+            <Sparkles className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium text-gray-700">Đang Phát Triển</span>
-            <Sparkles className="h-4 w-4 text-purple-500" />
+            <Sparkles className="h-4 w-4 text-accent" />
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">

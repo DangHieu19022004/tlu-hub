@@ -9,8 +9,8 @@ const categories = [
     title: "Tài Liệu Miễn Phí",
     description: "Slide bài giảng, đề cương môn học",
     count: "200+ tài liệu",
-    color: "text-blue-500",
-    bgColor: "bg-blue-500/10",
+    color: "text-primary",
+    bgColor: "bg-primary/10",
   },
   {
     icon: Video,
@@ -25,8 +25,8 @@ const categories = [
     title: "Bài Tập Lớn",
     description: "Đề bài và hướng dẫn làm bài",
     count: "100+ bài tập",
-    color: "text-green-500",
-    bgColor: "bg-green-500/10",
+    color: "text-accent",
+    bgColor: "bg-accent/10",
   },
   {
     icon: Code,

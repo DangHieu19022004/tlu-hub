@@ -134,7 +134,7 @@ export function AIChatbot() {
           )}
           <Button
             size="lg"
-            className="h-16 w-16 md:h-20 md:w-20 rounded-full shadow-lg transition-all hover:scale-110 p-3 overflow-hidden bg-blue-500"
+            className="h-16 w-16 md:h-20 md:w-20 rounded-full shadow-lg transition-all hover:scale-110 p-3 overflow-hidden bg-gradient-to-br from-primary to-accent"
             onClick={handleOpenChat}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
@@ -149,7 +149,7 @@ export function AIChatbot() {
         <Card className="fixed inset-x-0 bottom-0 md:bottom-6 md:right-6 md:left-auto z-50 flex h-[100dvh] md:h-[600px] w-full md:w-[400px] flex-col shadow-2xl md:rounded-lg rounded-none">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b border-border pb-4">
             <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 md:h-14 md:w-14 items-center justify-center rounded-full bg-blue-500 overflow-hidden p-2">
+              <div className="flex h-10 w-10 md:h-14 md:w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent overflow-hidden p-2">
                 <Image
                   src="/chatbot.png"
                   alt="TLU Assistant"
@@ -162,8 +162,8 @@ export function AIChatbot() {
                 <CardTitle className="text-base md:text-lg">TLU Assistant</CardTitle>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
                   </span>
                   Đang hoạt động
                 </div>

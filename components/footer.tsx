@@ -23,7 +23,7 @@ export function Footer() {
           </p>
           <div className="flex gap-3 mt-2">
             <Link
-              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-blue-600 transition-all"
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-accent transition-all"
               href="#"
             >
               <Globe className="w-5 h-5" />
