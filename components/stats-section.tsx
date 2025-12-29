@@ -1,5 +1,6 @@
 import { FileText, Download, Users } from "lucide-react"
 
+//  data about website stats
 // TODO: Fetch real stats from API
 const stats = [
   { icon: FileText, value: "2,450+", label: "Tài liệu đã chia sẻ", color: "text-primary", bgColor: "bg-red-50", borderColor: "border-red-100", shadowColor: "shadow-red-100/50" },

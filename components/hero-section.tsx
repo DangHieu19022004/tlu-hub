@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Search } from "lucide-react"
 import Image from "next/image"
 
+//img decor homepage
 export function HeroSection() {
   return (
     <section className="w-full flex justify-center py-5 px-4 sm:px-10">

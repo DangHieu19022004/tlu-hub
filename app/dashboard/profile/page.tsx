@@ -30,6 +30,13 @@ export default function ProfilePage() {
     studentId: user?.studentId || "",
     major: "",
   })
+
+  const [notifications, setNotifications] = useState({
+    emailCourse: true,
+    emailPromotion: false,
+    pushCourse: true,
+    pushMessage: true,
+  })
   
   useEffect(() => {
     setMounted(true)
@@ -41,13 +48,6 @@ export default function ProfilePage() {
   if (!mounted || !user) {
     return null
   }
-
-  const [notifications, setNotifications] = useState({
-    emailCourse: true,
-    emailPromotion: false,
-    pushCourse: true,
-    pushMessage: true,
-  })
 
   const handleProfileUpdate = (e: React.FormEvent) => {
     e.preventDefault()
