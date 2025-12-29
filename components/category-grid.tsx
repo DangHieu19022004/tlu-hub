@@ -2,6 +2,7 @@ import { Code, Palette, Video, Camera, TrendingUp, PenTool, DollarSign, Microsco
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
+// TODO: Static data - will be replaced with API categories
 const categories = [
   { name: "Lập Trình", icon: Code, count: 63, color: "bg-primary/10 text-primary" },
   { name: "Thiết Kế", icon: Palette, count: 52, color: "bg-orange-100 text-orange-600" },

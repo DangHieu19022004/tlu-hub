@@ -10,54 +10,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { BookOpen, Clock, Award, TrendingUp, PlayCircle, Download, Star, Settings } from "lucide-react"
 import Link from "next/link"
+import { useAuth } from "@/lib/auth-context"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
-const enrolledCourses = [
-  {
-    id: 1,
-    title: "Lập Trình Web Cơ Bản",
-    progress: 75,
-    lastAccessed: "2 giờ trước",
-    instructor: "Nguyễn Văn A",
-    image: "/web-development-coding.png",
-    totalLessons: 24,
-    completedLessons: 18,
-  },
-  {
-    id: 2,
-    title: "React & Next.js Nâng Cao",
-    progress: 45,
-    lastAccessed: "1 ngày trước",
-    instructor: "Trần Thị B",
-    image: "/react-nextjs-development.png",
-    totalLessons: 32,
-    completedLessons: 14,
-  },
-  {
-    id: 3,
-    title: "UI/UX Design Cơ Bản",
-    progress: 30,
-    lastAccessed: "3 ngày trước",
-    instructor: "Lê Văn C",
-    image: "/ui-ux-design-figma.jpg",
-    totalLessons: 20,
-    completedLessons: 6,
-  },
-]
-
-const recentActivity = [
-  { type: "course", title: "Hoàn thành bài học: DOM Manipulation", time: "2 giờ trước" },
-  { type: "certificate", title: "Nhận chứng chỉ: JavaScript Fundamentals", time: "1 ngày trước" },
-  { type: "download", title: "Tải tài liệu: React Hooks Guide", time: "2 ngày trước" },
-  { type: "course", title: "Đăng ký khóa học: Python cho Data Science", time: "3 ngày trước" },
-]
-
-const achievements = [
-  { title: "Người học chăm chỉ", description: "Hoàn thành 5 khóa học", icon: Award, unlocked: true },
-  { title: "Streak 7 ngày", description: "Học liên tục 7 ngày", icon: TrendingUp, unlocked: true },
-  { title: "Chuyên gia", description: "Đạt 100% trong 3 khóa học", icon: Star, unlocked: false },
-]
+// TODO: Fetch from API
+const enrolledCourses: any[] = []
+const recentActivity: any[] = []
+const achievements: any[] = []
 
 export default function DashboardPage() {
+  const { user } = useAuth()
+  const router = useRouter()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    if (!user) {
+      router.push("/login")
+    }
+  }, [user, router])
+
+  if (!mounted || !user) {
+    return null
+  }
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -68,13 +44,13 @@ export default function DashboardPage() {
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex items-center gap-4">
                 <Avatar className="h-20 w-20">
-                  <AvatarImage src="/placeholder.svg" />
-                  <AvatarFallback>NV</AvatarFallback>
+                  <AvatarImage src={user.image} />
+                  <AvatarFallback>{user.name?.substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h1 className="mb-1 text-2xl font-bold">Nguyễn Văn A</h1>
-                  <p className="text-muted-foreground">nguyenvana@tlu.edu.vn</p>
-                  <Badge className="mt-2">Sinh viên TLU</Badge>
+                  <h1 className="mb-1 text-2xl font-bold">{user.name}</h1>
+                  <p className="text-muted-foreground">{user.email}</p>
+                  <Badge className="mt-2">{user.isVIP ? 'VIP' : 'Sinh viên TLU'}</Badge>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -99,8 +75,8 @@ export default function DashboardPage() {
                   <BookOpen className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">3</div>
-                  <p className="text-xs text-muted-foreground">+1 từ tháng trước</p>
+                  <div className="text-2xl font-bold">{enrolledCourses.length}</div>
+                  <p className="text-xs text-muted-foreground">Tổng số khóa học</p>
                 </CardContent>
               </Card>
               <Card>
@@ -109,7 +85,7 @@ export default function DashboardPage() {
                   <Clock className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">24.5</div>
+                  <div className="text-2xl font-bold">0</div>
                   <p className="text-xs text-muted-foreground">Tháng này</p>
                 </CardContent>
               </Card>
@@ -119,18 +95,18 @@ export default function DashboardPage() {
                   <Award className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">5</div>
+                  <div className="text-2xl font-bold">0</div>
                   <p className="text-xs text-muted-foreground">Đã hoàn thành</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Điểm trung bình</CardTitle>
+                  <CardTitle className="text-sm font-medium">Số dư tài khoản</CardTitle>
                   <TrendingUp className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">8.5</div>
-                  <p className="text-xs text-muted-foreground">Tất cả khóa học</p>
+                  <div className="text-2xl font-bold">{user.balance?.toLocaleString() || 0} đ</div>
+                  <p className="text-xs text-muted-foreground">Số dư hiện tại</p>
                 </CardContent>
               </Card>
             </div>

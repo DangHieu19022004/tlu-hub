@@ -12,18 +12,35 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
+import { useAuth } from "@/lib/auth-context"
+import { useRouter } from "next/navigation"
 
 export default function ProfilePage() {
   const { toast } = useToast()
+  const { user } = useAuth()
+  const router = useRouter()
+  const [mounted, setMounted] = useState(false)
+  
   const [profileData, setProfileData] = useState({
-    name: "Nguyễn Văn A",
-    email: "nguyenvana@tlu.edu.vn",
-    phone: "0912345678",
-    studentId: "2021600001",
-    major: "Công nghệ thông tin",
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: "",
+    studentId: user?.studentId || "",
+    major: "",
   })
+  
+  useEffect(() => {
+    setMounted(true)
+    if (!user) {
+      router.push("/login")
+    }
+  }, [user, router])
+  
+  if (!mounted || !user) {
+    return null
+  }
 
   const [notifications, setNotifications] = useState({
     emailCourse: true,
@@ -67,11 +84,11 @@ export default function ProfilePage() {
                   <CardContent className="pt-6">
                     <div className="flex flex-col items-center text-center">
                       <Avatar className="h-24 w-24">
-                        <AvatarImage src="/placeholder.svg" />
-                        <AvatarFallback>NV</AvatarFallback>
+                        <AvatarImage src={user.image} />
+                        <AvatarFallback>{user.name?.substring(0, 2).toUpperCase()}</AvatarFallback>
                       </Avatar>
-                      <h3 className="mt-4 font-semibold">{profileData.name}</h3>
-                      <p className="text-sm text-muted-foreground">{profileData.email}</p>
+                      <h3 className="mt-4 font-semibold">{user.name}</h3>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
                       <Button className="mt-4 w-full bg-transparent" variant="outline">
                         Đổi ảnh đại diện
                       </Button>
