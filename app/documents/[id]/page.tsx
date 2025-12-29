@@ -13,76 +13,7 @@ import Link from "next/link"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api"
-
-// FAKE DATA - Keep as fallback when API fails
-const MOCK_DOCUMENT = {
-  id: 1,
-  title: "Tuyển chọn những bài luận văn phát triển sản phẩm du lịch mang tính thực tiễn cao",
-  description:
-    "Tài liệu này tổng hợp các bài luận văn xuất sắc về phát triển sản phẩm du lịch, bao gồm các nghiên cứu thực tiễn, phân tích thị trường và đề xuất chiến lược phát triển sản phẩm du lịch bền vững.",
-  features: [
-    "Phân tích thị trường du lịch hiện tại",
-    "Các mô hình phát triển sản phẩm du lịch thành công",
-    "Chiến lược marketing cho sản phẩm du lịch mới",
-    "Nghiên cứu trường hợp từ các điểm đến du lịch nổi tiếng",
-    "Đề xuất giải pháp phát triển bền vững",
-  ],
-  price: "50.000 VND",
-  pages: 125,
-  format: "PDF",
-  date: "08-5-2024",
-  author: "TS. Nguyễn Văn A",
-  views: 1250,
-  downloads: 320,
-  rating: 4.5,
-  reviewCount: 48,
-  thumbnail: "/doc-tourism-thesis.jpg",
-}
-
-const MOCK_REVIEWS = [
-  {
-    id: 1,
-    author: "Nguyễn Văn B",
-    rating: 5,
-    comment: "Tài liệu rất hữu ích, giúp tôi hoàn thành bài tập lớn một cách dễ dàng. Nội dung chi tiết và dễ hiểu.",
-    date: "15/04/2024",
-  },
-  {
-    id: 2,
-    author: "Trần Thị C",
-    rating: 4,
-    comment:
-      "Nội dung khá đầy đủ, tuy nhiên có một số phần còn thiếu ví dụ minh họa cụ thể. Nhìn chung là tài liệu tốt.",
-    date: "02/05/2024",
-  },
-]
-
-const MOCK_RELATED = [
-  {
-    id: 2,
-    title: "Hướng dẫn làm đồ án hệ thống cung cấp điện cho xưởng cơ khí MỚI NHẤT",
-    date: "07-8-2024",
-    views: 980,
-    downloads: 245,
-    thumbnail: "/doc-electrical-engineering.jpg",
-  },
-  {
-    id: 3,
-    title: "Top 10 tài liệu trắc nghiệm dược lý có đáp án - Top Báo Cáo Thực Tập Tốt Nhất",
-    date: "15-10-2024",
-    views: 1560,
-    downloads: 410,
-    thumbnail: "/doc-pharmacy-quiz.jpg",
-  },
-  {
-    id: 4,
-    title: "Tổng hợp 10 tài liệu về thực tập động cơ hay nhất - Top Báo Cáo Thực Tập",
-    date: "10-3-2024",
-    views: 890,
-    downloads: 210,
-    thumbnail: "/doc-internship-report.jpg",
-  },
-]
+import type { Document } from "@/lib/types"
 
 export default function DocumentDetailPage() {
   const params = useParams()
@@ -97,21 +28,15 @@ export default function DocumentDetailPage() {
     async function loadDocument() {
       setLoading(true)
       try {
-        // Fetch document by ID from API
         const docData = await api.getDocumentById(documentId)
-        if (docData) {
-          setDocument(docData)
-          // TODO: Fetch reviews and related documents from API when available
-          setReviews(MOCK_REVIEWS)
-          setRelatedDocuments(MOCK_RELATED)
-        }
+        setDocument(docData)
+        // TODO: Fetch reviews from API when available
+        setReviews([])
+        // TODO: Fetch related documents from API when available  
+        setRelatedDocuments([])
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn("Failed to load document from API, using fallback", err)
-        // Fallback to mock data
-        setDocument(MOCK_DOCUMENT)
-        setReviews(MOCK_REVIEWS)
-        setRelatedDocuments(MOCK_RELATED)
+        console.error("Failed to load document:", err)
+        setDocument(null)
       } finally {
         setLoading(false)
       }

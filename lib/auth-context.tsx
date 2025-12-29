@@ -22,14 +22,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const DEMO_USER = {
-  studentId: "2251961779",
-  email: "user1@e.tlu.edu.vn",
-  password: "123",
-  name: "User1",
-  image: "https://api.dicebear.com/7.x/avataaars/svg?seed=user1",
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -73,27 +65,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return true
     } catch (error: any) {
       console.error("Login failed:", error)
-      
-      // Fallback to demo user for development
-      if (
-        process.env.NODE_ENV === "development" &&
-        studentId === DEMO_USER.studentId &&
-        password === DEMO_USER.password
-      ) {
-        const userData: User = {
-          studentId: DEMO_USER.studentId,
-          email: DEMO_USER.email,
-          name: DEMO_USER.name,
-          image: DEMO_USER.image,
-          isVIP: false,
-          balance: 0,
-        }
-        setUser(userData)
-        localStorage.setItem("tlu-hub-user", JSON.stringify(userData))
-        setIsLoading(false)
-        return true
-      }
-
       setIsLoading(false)
       return false
     }

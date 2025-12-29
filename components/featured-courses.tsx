@@ -4,6 +4,8 @@ import { Star, Clock, Users } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
+// TODO: Replace with API call to fetch courses
+// This is temporary static data for UI demonstration
 const courses = [
   {
     id: 1,
