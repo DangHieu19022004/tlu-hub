@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { HeroSection } from "@/components/hero-section"
@@ -18,9 +19,11 @@ export default function HomePage() {
         <HeroSection />
         <StatsSection />
         <AboutSection />
-        <FeaturedDocuments />
-        <FeaturedCourses />
-        <CategoryGrid />
+        <Suspense fallback={<div className="py-16 text-center">Đang tải...</div>}>
+          <FeaturedDocuments />
+          <FeaturedCourses />
+          <CategoryGrid />
+        </Suspense>
         <TestimonialsSection />
         <CTASection />
       </main>

@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { FeaturedCourses } from "@/components/featured-courses"
@@ -24,9 +25,11 @@ export default function CoursesPage() {
           </div>
         </section>
 
-        <CourseCategories />
-        <FeaturedCourses />
-        <CategoryGrid />
+        <Suspense fallback={<div className="py-16 text-center">Đang tải...</div>}>
+          <CourseCategories />
+          <FeaturedCourses />
+          <CategoryGrid />
+        </Suspense>
       </main>
       <Footer />
       <AIChatbot />

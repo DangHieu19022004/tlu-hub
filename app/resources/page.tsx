@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { FeaturedDocuments } from "@/components/featured-documents"
@@ -46,7 +47,9 @@ export default function ResourcesPage() {
           </div>
         </section>
 
-        <FeaturedDocuments />
+        <Suspense fallback={<div className="py-16 text-center">Đang tải tài liệu...</div>}>
+          <FeaturedDocuments />
+        </Suspense>
       </main>
       <Footer />
       <AIChatbot />
