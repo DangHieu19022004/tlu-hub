@@ -2,7 +2,7 @@ import { FileText, Download, Users } from "lucide-react"
 
 const stats = [
   { icon: FileText, value: "2,450+", label: "Tài liệu đã chia sẻ", color: "text-primary", bgColor: "bg-red-50", borderColor: "border-red-100", shadowColor: "shadow-red-100/50" },
-  { icon: Download, value: "15,000+", label: "Lượt tải về", color: "text-secondary", bgColor: "bg-blue-50", borderColor: "border-blue-100", shadowColor: "shadow-blue-100/50" },
+  { icon: Download, value: "15,000+", label: "Lượt tải về", color: "text-accent", bgColor: "bg-accent/5", borderColor: "border-accent/20", shadowColor: "shadow-accent/10" },
   { icon: Users, value: "850+", label: "Sinh viên tham gia", color: "text-orange-500", bgColor: "bg-orange-50", borderColor: "border-orange-100", shadowColor: "shadow-orange-100/50" },
 ]
 

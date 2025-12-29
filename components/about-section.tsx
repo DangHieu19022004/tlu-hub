@@ -27,8 +27,8 @@ export function AboutSection() {
           </div>
           
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-5 w-full">
-            <div className="flex flex-col gap-4 rounded-3xl border border-blue-100 bg-white p-6 shadow-xl shadow-blue-50">
-              <div className="text-secondary size-12 flex items-center justify-center bg-blue-50 rounded-2xl mb-1">
+            <div className="flex flex-col gap-4 rounded-3xl border border-primary/20 bg-white p-6 shadow-xl shadow-primary/10">
+              <div className="text-primary size-12 flex items-center justify-center bg-primary/10 rounded-2xl mb-1">
                 <BookOpen className="w-8 h-8" />
               </div>
               <div className="flex flex-col gap-2">
@@ -41,8 +41,8 @@ export function AboutSection() {
               </div>
             </div>
             
-            <div className="flex flex-col gap-4 rounded-3xl border border-green-100 bg-white p-6 shadow-xl shadow-green-50">
-              <div className="text-green-500 size-12 flex items-center justify-center bg-green-50 rounded-2xl mb-1">
+            <div className="flex flex-col gap-4 rounded-3xl border border-accent/20 bg-white p-6 shadow-xl shadow-accent/10">
+              <div className="text-accent size-12 flex items-center justify-center bg-accent/10 rounded-2xl mb-1">
                 <CheckCircle className="w-8 h-8" />
               </div>
               <div className="flex flex-col gap-2">

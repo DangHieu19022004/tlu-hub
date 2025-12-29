@@ -2,9 +2,13 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { HeroSection } from "@/components/hero-section"
 import { StatsSection } from "@/components/stats-section"
-import { FeaturedDocuments } from "@/components/featured-documents"
 import { AboutSection } from "@/components/about-section"
+import { FeaturedDocuments } from "@/components/featured-documents"
+import { FeaturedCourses } from "@/components/featured-courses"
+import { CategoryGrid } from "@/components/category-grid"
+import { TestimonialsSection } from "@/components/testimonials-section"
 import { CTASection } from "@/components/cta-section"
+import { AIChatbot } from "@/components/ai-chatbot"
 
 export default function HomePage() {
   return (
@@ -13,11 +17,15 @@ export default function HomePage() {
       <main className="flex-1">
         <HeroSection />
         <StatsSection />
-        <FeaturedDocuments />
         <AboutSection />
+        <FeaturedDocuments />
+        <FeaturedCourses />
+        <CategoryGrid />
+        <TestimonialsSection />
         <CTASection />
       </main>
       <Footer />
+      <AIChatbot />
     </div>
   )
 }

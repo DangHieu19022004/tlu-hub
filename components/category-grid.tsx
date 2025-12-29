@@ -3,11 +3,11 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 const categories = [
-  { name: "Lập Trình", icon: Code, count: 63, color: "bg-blue-100 text-blue-600" },
+  { name: "Lập Trình", icon: Code, count: 63, color: "bg-primary/10 text-primary" },
   { name: "Thiết Kế", icon: Palette, count: 52, color: "bg-orange-100 text-orange-600" },
   { name: "Video & Ảnh", icon: Video, count: 48, color: "bg-purple-100 text-purple-600" },
   { name: "Nhiếp Ảnh", icon: Camera, count: 35, color: "bg-pink-100 text-pink-600" },
-  { name: "Marketing", icon: TrendingUp, count: 42, color: "bg-green-100 text-green-600" },
+  { name: "Marketing", icon: TrendingUp, count: 42, color: "bg-accent/10 text-accent" },
   { name: "Viết Nội Dung", icon: PenTool, count: 28, color: "bg-yellow-100 text-yellow-600" },
   { name: "Tài Chính", icon: DollarSign, count: 31, color: "bg-emerald-100 text-emerald-600" },
   { name: "Khoa Học", icon: Microscope, count: 45, color: "bg-cyan-100 text-cyan-600" },

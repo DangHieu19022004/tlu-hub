@@ -102,7 +102,7 @@ export function FeaturedDocuments() {
             </p>
           </div>
           <Link
-            className="text-secondary font-bold text-sm flex items-center gap-1 hover:text-blue-600 transition-colors bg-blue-50 px-4 py-2 rounded-full"
+            className="text-primary font-bold text-sm flex items-center gap-1 hover:text-accent transition-colors bg-primary/10 px-4 py-2 rounded-full"
             href="/resources"
           >
             Xem tất cả
