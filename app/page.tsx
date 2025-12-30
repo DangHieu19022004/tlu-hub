@@ -8,6 +8,10 @@ import { BookOpen, FileText, Users, Sparkles, Clock } from 'lucide-react'
 import Image from "next/image"
 
 export default function HomePage() {
+  // Ngày đích: Mùng 1 Tết 2026 (17/02/2026)
+  const launchDate = new Date('2026-02-17T00:00:00')
+
+  // State ban đầu là 0 để tránh hiển thị sai số ngày trước khi tính toán xong
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -15,10 +19,9 @@ export default function HomePage() {
     seconds: 0
   })
 
-  const launchDate = new Date('2025-01-15T00:00:00')
-
   useEffect(() => {
-    const timer = setInterval(() => {
+    // Hàm tính toán tách riêng để gọi ngay lập tức
+    const calculateTimeLeft = () => {
       const now = new Date()
       const difference = launchDate.getTime() - now.getTime()
 
@@ -29,11 +32,19 @@ export default function HomePage() {
           minutes: Math.floor((difference / 1000 / 60) % 60),
           seconds: Math.floor((difference / 1000) % 60)
         })
+      } else {
+        // Xử lý khi đã đến Tết
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
       }
-    }, 1000)
+    }
+
+    // Gọi ngay lập tức 1 lần để không bị delay 1 giây đầu tiên
+    calculateTimeLeft()
+
+    const timer = setInterval(calculateTimeLeft, 1000)
 
     return () => clearInterval(timer)
-  }, [launchDate])
+  }, [])
 
   const features = [
     {
