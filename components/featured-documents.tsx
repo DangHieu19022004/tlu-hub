@@ -99,7 +99,7 @@ export function FeaturedDocuments() {
                       </div>
                     </div>
                     <div className="flex flex-col gap-1 px-2 pt-1">
-                      <h3 className="text-foreground text-lg font-bold line-clamp-1 group-hover:text-primary transition-colors">
+                      <h3 className="text-foreground text-lg font-bold line-clamp-1 group-hover:text-primary transition-colors font-sans">
                         {doc.title}
                       </h3>
                       <p className="text-gray-500 text-sm font-medium">
@@ -112,7 +112,7 @@ export function FeaturedDocuments() {
                           <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-400"></div>
                         </div>
                         <span className="text-xs font-bold text-gray-600 truncate max-w-[80px]">
-                          Sinh viên TLU
+                          {doc.uploaderName || doc.uploader || doc.author || 'Sinh viên TLU'}
                         </span>
                       </div>
                       <div className="flex items-center gap-1 text-gray-500 text-xs font-medium bg-gray-50 px-2 py-1 rounded-md">

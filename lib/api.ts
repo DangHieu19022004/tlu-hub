@@ -106,7 +106,8 @@ async function apiFetch<T = any>(path: string, options: FetchOptions = {}): Prom
   const token = getAuthToken()
 
   const defaultHeaders: Record<string, string> = {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json; charset=utf-8",
+    "Accept": "application/json; charset=utf-8",
   }
   if (token) {
     defaultHeaders["Authorization"] = `Bearer ${token}`
@@ -132,13 +133,13 @@ async function apiFetch<T = any>(path: string, options: FetchOptions = {}): Prom
     let data: any = null
 
     if (contentType.includes("application/json")) {
-      const text = await res.text()
-      if (text) {
-        try {
-          data = JSON.parse(text)
-        } catch {
-          data = text
-        }
+      // Use res.json() instead of res.text() for proper UTF-8 handling
+      try {
+        data = await res.json()
+      } catch (jsonError) {
+        // Fallback to text if JSON parsing fails
+        const text = await res.text()
+        data = text || null
       }
     } else {
       data = await res.text()
