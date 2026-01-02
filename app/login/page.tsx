@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { PageLoadingSpinner, ButtonLoadingSpinner } from "@/components/ui/loading-spinner"
 import { useAuth } from "@/lib/auth-context"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Lock, Mail, Eye, EyeOff } from "lucide-react"
+import { Lock, Mail, Eye, EyeOff, CheckCircle, XCircle } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -23,45 +24,51 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [success, setSuccess] = useState(false)
 
   useEffect(() => {
-    if (user) {
-      router.push("/dashboard")
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted && user) {
+      router.push("/profile")
     }
-  }, [user, router])
+  }, [mounted, user, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
+    setSuccess(false)
     setLoading(true)
 
     try {
-      const success = await login(formData.studentId, formData.password)
-      if (success) {
-        router.push("/dashboard")
-      } else {
-        setError("Mã sinh viên hoặc mật khẩu không chính xác")
-      }
+      await login(formData.studentId, formData.password)
+      // Show success message briefly before redirect
+      setSuccess(true)
+      setTimeout(() => {
+        // If login succeeds, user will be set and useEffect will redirect
+      }, 800)
     } catch (err: any) {
       setError(err.message || "Đăng nhập thất bại. Vui lòng thử lại.")
-    } finally {
       setLoading(false)
     }
-  }
-
-  if (isLoading || user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    )
   }
 
   return (
     <div className="flex min-h-screen flex-col bg-[#fef5f7]">
       <Header />
       <main className="flex-1 flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-md">
+        {!mounted || isLoading || user ? (
+          <PageLoadingSpinner />
+        ) : (
+        <div 
+          className="w-full max-w-md animate-in fade-in-0 slide-in-from-bottom-4 duration-500"
+          style={{
+            animation: 'fadeInUp 0.6s ease-out',
+          }}
+        >
           <Card className="shadow-xl border-2">
             <CardHeader className="text-center space-y-4">
               <div className="mx-auto w-20 h-20">
@@ -81,8 +88,26 @@ export default function LoginPage() {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                    {error}
+                  <div 
+                    className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2 animate-in fade-in-0 slide-in-from-top-2 duration-300"
+                    style={{
+                      animation: 'shake 0.5s ease-in-out',
+                    }}
+                  >
+                    <XCircle className="h-4 w-4 shrink-0" />
+                    <span>{error}</span>
+                  </div>
+                )}
+
+                {success && (
+                  <div 
+                    className="bg-green-50 border-2 border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2 animate-in fade-in-0 slide-in-from-top-2 duration-300"
+                    style={{
+                      animation: 'successPulse 0.6s ease-in-out',
+                    }}
+                  >
+                    <CheckCircle className="h-5 w-5 shrink-0" />
+                    <span className="font-semibold">Đăng nhập thành công! Đang chuyển hướng...</span>
                   </div>
                 )}
 
@@ -100,7 +125,7 @@ export default function LoginPage() {
                       onChange={(e) => setFormData({ ...formData, studentId: e.target.value })}
                       className="pl-10 h-12 text-base"
                       required
-                      disabled={loading}
+                      disabled={loading || success}
                     />
                   </div>
                 </div>
@@ -119,7 +144,7 @@ export default function LoginPage() {
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                       className="pl-10 pr-10 h-12 text-base"
                       required
-                      disabled={loading}
+                      disabled={loading || success}
                     />
                     <button
                       type="button"
@@ -143,14 +168,16 @@ export default function LoginPage() {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 text-base font-bold"
-                  disabled={loading}
+                  className="w-full h-12 text-base font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  disabled={loading || success}
                 >
                   {loading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Đang đăng nhập...
-                    </>
+                    <ButtonLoadingSpinner />
+                  ) : success ? (
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-5 w-5" />
+                      <span>Thành công!</span>
+                    </div>
                   ) : (
                     "Đăng nhập"
                   )}
@@ -181,6 +208,7 @@ export default function LoginPage() {
             </CardContent>
           </Card>
         </div>
+        )}
       </main>
       <Footer />
     </div>

@@ -162,17 +162,46 @@ async function apiFetch<T = any>(path: string, options: FetchOptions = {}): Prom
     const duration = Date.now() - startTime
     
     if (err.name === "AbortError") {
-      console.error("❌ API Timeout:", { url, duration })
-      throw {
+      const timeoutError = {
         name: "ApiException",
-        message: "Request timeout",
+        message: "Server không phản hồi",
         status: 408,
         data: null,
       }
+      
+      if (ApiConfig.debug) {
+        console.warn("⚠️ API Timeout:", { 
+          url, 
+          duration: `${duration}ms`,
+          timeout: `${ApiConfig.timeout}ms`,
+        })
+      }
+      
+      throw timeoutError
+    }
+
+    // Network error or fetch failed
+    if (!err.status) {
+      const networkError = {
+        name: "ApiException",
+        message: err.message || "Network error - Unable to connect to server",
+        status: 0,
+        data: null,
+      }
+      
+      if (ApiConfig.debug) {
+        console.warn("⚠️ API Network Error:", {
+          url,
+          message: err.message,
+          duration,
+        })
+      }
+      
+      throw networkError
     }
 
     if (ApiConfig.debug) {
-      console.error("❌ API Error:", {
+      console.warn("⚠️ API Error:", {
         url,
         error: err.message,
         status: err.status,

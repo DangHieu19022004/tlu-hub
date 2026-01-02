@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { api } from "./api"
 import type { LoginResponse } from "./types"
+import { toast } from "@/hooks/use-toast"
 
 interface User {
   studentId: string
@@ -61,29 +62,74 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem("tlu-hub-token", response.token)
       }
 
+      // Show success toast
+      toast({
+        variant: "success" as any,
+        title: "Đăng nhập thành công!",
+        description: `Chào mừng ${userData.name} quay lại TLU Hub`,
+      })
+
       setIsLoading(false)
       return true
     } catch (error: any) {
       console.error("Login failed:", error)
       setIsLoading(false)
-      return false
+      
+      // Show error toast with detailed message
+      let errorMessage = "Đăng nhập thất bại. Vui lòng thử lại."
+      
+      if (error.status === 408) {
+        errorMessage = "Server không phản hồi. Vui lòng kiểm tra backend hoặc kết nối mạng."
+      } else if (error.status === 0) {
+        errorMessage = "Không thể kết nối đến server. Vui lòng kiểm tra backend đã chạy chưa."
+      } else if (error.status === 401 || error.status === 400) {
+        errorMessage = "Mã sinh viên hoặc mật khẩu không chính xác"
+      } else if (error.status >= 500) {
+        errorMessage = "Lỗi server. Vui lòng thử lại sau."
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+
+      toast({
+        variant: "destructive",
+        title: "Lỗi đăng nhập",
+        description: errorMessage,
+      })
+      
+      // Throw error with better message for UI
+      throw new Error(errorMessage)
     }
   }
 
   const logout = async () => {
     setIsLoading(true)
+    
+    // Always clear local state first
+    const wasLoggedIn = !!user
+    setUser(null)
+    localStorage.removeItem("tlu-hub-user")
+    localStorage.removeItem("tlu-hub-token")
+    
+    // Try to notify backend, but don't fail if it errors
     try {
       if (user?.studentId) {
         await api.logout(user.studentId)
       }
     } catch (error) {
-      console.error("Logout API call failed:", error)
-    } finally {
-      setUser(null)
-      localStorage.removeItem("tlu-hub-user")
-      localStorage.removeItem("tlu-hub-token")
-      setIsLoading(false)
+      console.warn("Logout API call failed, but user is logged out locally:", error)
+      // Don't throw - logout should always succeed on client side
     }
+    
+    // Show toast notification
+    if (wasLoggedIn) {
+      toast({
+        variant: "default",
+        title: "Đã đăng xuất",
+        description: "Bạn đã đăng xuất khỏi TLU Hub",
+      })
+    }
+    
+    setIsLoading(false)
   }
 
   return <AuthContext.Provider value={{ user, login, logout, isLoading }}>{children}</AuthContext.Provider>

@@ -4,12 +4,17 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
 import { UserDropdown } from "@/components/user-dropdown"
-import { memo } from "react"
+import { memo, useState, useEffect } from "react"
 
 function AuthButtonsComponent() {
   const { user, isLoading } = useAuth()
+  const [mounted, setMounted] = useState(false)
 
-  if (isLoading) {
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted || isLoading) {
     return (
       <div className="h-10 w-24 animate-pulse bg-gray-200 rounded"></div>
     )

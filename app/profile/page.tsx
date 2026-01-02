@@ -29,7 +29,7 @@ import {
   EyeOff,
 } from "lucide-react"
 import { useEffect, useState } from "react"
-import { api } from "@/lib/api"
+import { api, ApiConfig } from "@/lib/api"
 
 export default function ProfilePage() {
   const { user, logout } = useAuth()
@@ -67,15 +67,15 @@ export default function ProfilePage() {
       try {
         // Fetch purchased documents for the current user
         const studentIdToUse = user!.studentId ?? user!.email
-        console.log("👤 Current user:", user)
-        console.log("🔑 Student ID to use:", studentIdToUse)
+        
+        if (ApiConfig.debug) {
+          console.log("👤 Loading profile documents for:", studentIdToUse)
+        }
         
         const resp = await api.getStudentDocuments(studentIdToUse)
-        console.log("📚 Student documents response:", resp)
         
         if (resp) {
           // Map API response to our state format
-          // Response format: { documentID, title, description, type, price, accessLevel, storageLink, uploadDate, subject, tags, viewsCount }
           const documents = Array.isArray(resp) ? resp : (resp.documents || resp.data || [])
           
           setProfileData({
@@ -90,28 +90,27 @@ export default function ProfilePage() {
               date: doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString("vi-VN") : new Date().toLocaleDateString("vi-VN"),
               price: doc.price || 0,
               subject: doc.subject || "",
-              type: doc.type, // 0 = free, 1 = paid (assumption)
-              accessLevel: doc.accessLevel, // 0 = public, 1 = premium, etc.
+              type: doc.type,
+              accessLevel: doc.accessLevel,
               viewsCount: doc.viewsCount || 0,
               storageLink: doc.storageLink || "",
             })),
-            freeDocs: [], // Free docs would come from a different endpoint or filter
+            freeDocs: [],
           })
-          setLoading(false)
-          return
         }
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn("⚠️ Failed loading profile documents from API", err)
+      } catch (err: any) {
+        // Silently handle API errors - user will see empty state
+        console.warn("⚠️ Could not load profile documents:", err?.message || "Unknown error")
+        
+        // Set empty state on error
+        setProfileData((prev: any) => ({
+          ...prev,
+          purchasedDocs: [],
+          freeDocs: [],
+        }))
+      } finally {
+        setLoading(false)
       }
-      
-      setLoading(false)
-      // Fallback: empty state instead of mock data (shows user has no purchased documents yet)
-      setProfileData((prev: any) => ({
-        ...prev,
-        purchasedDocs: [],
-        freeDocs: [],
-      }))
     }
     void loadProfileDocs()
   }, [user])
