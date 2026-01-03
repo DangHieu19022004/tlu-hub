@@ -1,13 +1,96 @@
-import { Suspense } from "react"
+"use client"
+
+import { Suspense, useState, useCallback, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { FeaturedDocuments } from "@/components/featured-documents"
 import { AIChatbot } from "@/components/ai-chatbot"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Search, Filter } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Search, Filter, FileText, Code, BarChart3, BookOpen, Building2, Eye, Loader2 } from "lucide-react"
+import { api } from "@/lib/api"
+import type { Document, DocumentType } from "@/lib/types"
+import Link from "next/link"
+
+// Helper functions
+const getDocumentTypeLabel = (type: DocumentType): { label: string; color: string } => {
+  switch (type) {
+    case 0: return { label: "Bài giảng", color: "bg-blue-100 text-blue-700 border-blue-200" }
+    case 1: return { label: "Bài tập", color: "bg-green-100 text-green-700 border-green-200" }
+    case 2: return { label: "Đề thi", color: "bg-red-100 text-red-700 border-red-200" }
+    case 3: return { label: "Tài liệu tham khảo", color: "bg-purple-100 text-purple-700 border-purple-200" }
+    default: return { label: "Khác", color: "bg-gray-100 text-gray-700 border-gray-200" }
+  }
+}
+
+const getDocumentIcon = (type: DocumentType) => {
+  switch (type) {
+    case 0: return FileText
+    case 1: return Code
+    case 2: return BarChart3
+    case 3: return BookOpen
+    default: return Building2
+  }
+}
+
+const formatPrice = (price?: number): string => {
+  if (price === undefined || price === null || price === 0) return "Miễn phí"
+  return new Intl.NumberFormat("vi-VN", { 
+    style: "currency", 
+    currency: "VND" 
+  }).format(price)
+}
 
 export default function ResourcesPage() {
+  const searchParams = useSearchParams()
+  const [searchKeyword, setSearchKeyword] = useState("")
+  const [searchResults, setSearchResults] = useState<Document[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [hasSearched, setHasSearched] = useState(false)
+
+  // Auto search when query param exists
+  useEffect(() => {
+    const query = searchParams.get("search")
+    if (query) {
+      setSearchKeyword(query)
+      performSearch(query)
+    }
+  }, [searchParams])
+
+  const performSearch = async (keyword: string) => {
+    if (!keyword.trim()) {
+      setSearchResults([])
+      setHasSearched(false)
+      return
+    }
+
+    setIsSearching(true)
+    setHasSearched(true)
+    try {
+      const response = await api.searchDocuments(keyword.trim(), 50)
+      const docs = response?.data || response || []
+      setSearchResults(Array.isArray(docs) ? docs : [])
+    } catch (err) {
+      console.error("Search failed:", err)
+      setSearchResults([])
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  const handleSearch = useCallback(async () => {
+    performSearch(searchKeyword)
+  }, [searchKeyword])
+
+  const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch()
+    }
+  }, [handleSearch])
+
   return (
     <div className="flex min-h-screen flex-col bg-[#fef5f7]">
       <Header />
@@ -31,12 +114,24 @@ export default function ResourcesPage() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input
                     type="text"
-                    placeholder="Tìm kiếm theo mã môn, tên môn học..."
+                    placeholder="Tìm kiếm theo tên tài liệu, môn học, từ khóa..."
                     className="pl-10 h-12"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    onKeyPress={handleKeyPress}
                   />
                 </div>
-                <Button size="lg" className="bg-primary hover:bg-accent">
-                  <Search className="h-5 w-5 mr-2" />
+                <Button 
+                  size="lg" 
+                  className="bg-primary hover:bg-accent"
+                  onClick={handleSearch}
+                  disabled={isSearching}
+                >
+                  {isSearching ? (
+                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                  ) : (
+                    <Search className="h-5 w-5 mr-2" />
+                  )}
                   Tìm kiếm
                 </Button>
                 <Button size="lg" variant="outline">
@@ -46,6 +141,78 @@ export default function ResourcesPage() {
             </div>
           </div>
         </section>
+
+        {/* Search Results */}
+        {hasSearched && (
+          <section className="w-full flex justify-center py-8 px-4 sm:px-10">
+            <div className="w-full max-w-[1100px]">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-foreground mb-2">
+                  Kết quả tìm kiếm
+                </h2>
+                <p className="text-muted-foreground">
+                  {isSearching 
+                    ? "Đang tìm kiếm..." 
+                    : `Tìm thấy ${searchResults.length} tài liệu cho "${searchKeyword}"`
+                  }
+                </p>
+              </div>
+
+              {isSearching ? (
+                <div className="flex items-center justify-center py-16">
+                  <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                </div>
+              ) : searchResults.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {searchResults.map((doc) => {
+                    const typeInfo = getDocumentTypeLabel(doc.type)
+                    const Icon = getDocumentIcon(doc.type)
+                    
+                    return (
+                      <Link key={doc.documentID} href={`/documents/${doc.documentID}`}>
+                        <Card className="group hover:shadow-xl hover:shadow-red-100/50 transition-all duration-300 cursor-pointer h-full border border-gray-100">
+                          <CardContent className="p-3">
+                            <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-blue-50 to-purple-100 mb-3">
+                              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 group-hover:scale-105 transition-transform duration-300">
+                                <Icon className="w-16 h-16 text-primary/40 group-hover:text-primary/60 transition-colors" />
+                              </div>
+                              <Badge className={`absolute top-2 right-2 ${typeInfo.color} border text-xs font-semibold`}>
+                                {typeInfo.label}
+                              </Badge>
+                            </div>
+                            <h3 className="font-bold text-sm mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                              {doc.title}
+                            </h3>
+                            {doc.subject && (
+                              <p className="text-xs text-muted-foreground mb-2 line-clamp-1">
+                                {doc.subject}
+                              </p>
+                            )}
+                            <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <Eye className="w-3 h-3" />
+                                <span>{doc.viewsCount?.toLocaleString() || 0}</span>
+                              </div>
+                              <span className="text-xs font-bold text-primary">
+                                {formatPrice(doc.price)}
+                              </span>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-16 bg-white rounded-lg border border-gray-100">
+                  <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500 text-lg mb-2">Không tìm thấy tài liệu nào</p>
+                  <p className="text-gray-400 text-sm">Thử tìm kiếm với từ khóa khác</p>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
 
         <Suspense fallback={<div className="py-16 text-center">Đang tải tài liệu...</div>}>
           <FeaturedDocuments />

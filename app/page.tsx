@@ -21,7 +21,7 @@ export default function HomePage() {
         <AboutSection />
         <Suspense fallback={<div className="py-16 text-center">Đang tải...</div>}>
           <FeaturedDocuments />
-          <FeaturedCourses />
+          {/* <FeaturedCourses /> */}
           <CategoryGrid />
         </Suspense>
         <TestimonialsSection />
