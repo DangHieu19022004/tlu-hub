@@ -7,35 +7,140 @@ import DocumentActions from "@/components/document-actions"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Download, Share2, Eye, DownloadIcon, Calendar, User, Star, Heart, MessageSquare } from "lucide-react"
+import { 
+  Download, 
+  Share2, 
+  Eye, 
+  Calendar, 
+  User, 
+  Star, 
+  Heart, 
+  MessageSquare,
+  FileText,
+  Code,
+  BarChart3,
+  Building2,
+  Tag,
+  BookOpen,
+  Clock,
+  DollarSign,
+  Shield,
+  ChevronRight,
+  Home
+} from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api"
-import type { Document } from "@/lib/types"
+import type { Document, DocumentType, AccessLevel } from "@/lib/types"
+
+// Helper functions
+const getDocumentTypeLabel = (type: DocumentType): { label: string; color: string } => {
+  switch (type) {
+    case 0: return { label: "Bài giảng", color: "bg-blue-100 text-blue-700 border-blue-200" }
+    case 1: return { label: "Bài tập", color: "bg-green-100 text-green-700 border-green-200" }
+    case 2: return { label: "Đề thi", color: "bg-red-100 text-red-700 border-red-200" }
+    case 3: return { label: "Tài liệu tham khảo", color: "bg-purple-100 text-purple-700 border-purple-200" }
+    default: return { label: "Khác", color: "bg-gray-100 text-gray-700 border-gray-200" }
+  }
+}
+
+const getAccessLevelLabel = (level: AccessLevel): { label: string; icon: JSX.Element; color: string } => {
+  switch (level) {
+    case 0: return { 
+      label: "Công khai", 
+      icon: <Eye className="w-4 h-4" />, 
+      color: "bg-green-100 text-green-700 border-green-200" 
+    }
+    case 1: return { 
+      label: "Sinh viên", 
+      icon: <User className="w-4 h-4" />, 
+      color: "bg-blue-100 text-blue-700 border-blue-200" 
+    }
+    case 2: return { 
+      label: "VIP", 
+      icon: <Star className="w-4 h-4" />, 
+      color: "bg-yellow-100 text-yellow-700 border-yellow-200" 
+    }
+    default: return { 
+      label: "Không xác định", 
+      icon: <Shield className="w-4 h-4" />, 
+      color: "bg-gray-100 text-gray-700 border-gray-200" 
+    }
+  }
+}
+
+const getDocumentIcon = (type: DocumentType) => {
+  switch (type) {
+    case 0: return FileText
+    case 1: return Code
+    case 2: return BarChart3
+    case 3: return BookOpen
+    default: return Building2
+  }
+}
+
+const formatDate = (dateString?: string): string => {
+  if (!dateString) return "Không rõ"
+  try {
+    const date = new Date(dateString)
+    return date.toLocaleDateString("vi-VN", { 
+      year: "numeric", 
+      month: "long", 
+      day: "numeric" 
+    })
+  } catch {
+    return dateString
+  }
+}
+
+const formatPrice = (price?: number): string => {
+  if (price === undefined || price === null) return "Miễn phí"
+  if (price === 0) return "Miễn phí"
+  return new Intl.NumberFormat("vi-VN", { 
+    style: "currency", 
+    currency: "VND" 
+  }).format(price)
+}
 
 export default function DocumentDetailPage() {
   const params = useParams()
   const documentId = params.id as string
   
-  const [document, setDocument] = useState<any>(null)
+  const [document, setDocument] = useState<Document | null>(null)
   const [reviews, setReviews] = useState<any[]>([])
-  const [relatedDocuments, setRelatedDocuments] = useState<any[]>([])
+  const [relatedDocuments, setRelatedDocuments] = useState<Document[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function loadDocument() {
       setLoading(true)
+      setError(null)
       try {
         const docData = await api.getDocumentById(documentId)
         setDocument(docData)
+        
+        // Load related documents based on subject or tags
+        try {
+          const topDocs = await api.getTopDocuments()
+          const docs = topDocs?.data || topDocs || []
+          // Filter out current document and limit to 3
+          const related = (Array.isArray(docs) ? docs : [])
+            .filter((d: any) => d.documentID !== documentId)
+            .slice(0, 3)
+          setRelatedDocuments(related)
+        } catch (relErr) {
+          console.error("Failed to load related documents:", relErr)
+          setRelatedDocuments([])
+        }
+        
         // TODO: Fetch reviews from API when available
         setReviews([])
-        // TODO: Fetch related documents from API when available  
-        setRelatedDocuments([])
-      } catch (err) {
+      } catch (err: any) {
         console.error("Failed to load document:", err)
+        setError(err?.message || "Không thể tải tài liệu")
         setDocument(null)
       } finally {
         setLoading(false)
@@ -46,12 +151,12 @@ export default function DocumentDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <main className="flex-1 bg-gray-50 flex items-center justify-center">
+        <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Đang tải tài liệu...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary/30 border-t-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Đang tải tài liệu...</p>
           </div>
         </main>
         <Footer />
@@ -59,175 +164,231 @@ export default function DocumentDetailPage() {
     )
   }
 
-  if (!document) {
+  if (error || !document) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <main className="flex-1 bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-gray-600 text-xl">Không tìm thấy tài liệu</p>
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center max-w-md px-4">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-100 flex items-center justify-center">
+              <FileText className="w-10 h-10 text-red-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Không tìm thấy tài liệu</h2>
+            <p className="text-muted-foreground mb-6">{error || "Tài liệu này có thể đã bị xóa hoặc không tồn tại."}</p>
+            <Link href="/resources">
+              <Button className="bg-primary hover:bg-accent">
+                <Home className="w-4 h-4 mr-2" />
+                Về trang tài liệu
+              </Button>
+            </Link>
           </div>
         </main>
         <Footer />
       </div>
     )
   }
+
+  const typeInfo = getDocumentTypeLabel(document.type)
+  const accessInfo = getAccessLevelLabel(document.accessLevel)
+  const DocIcon = getDocumentIcon(document.type)
+  const tags = document.tags ? document.tags.split(',').map(t => t.trim()).filter(t => t) : []
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1 bg-gray-50">
+      <main className="flex-1">
+        {/* Breadcrumb */}
+        <div className="border-b bg-card">
+          <div className="container mx-auto max-w-7xl px-4 py-4">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Link href="/" className="hover:text-primary transition-colors">
+                <Home className="w-4 h-4" />
+              </Link>
+              <ChevronRight className="w-4 h-4" />
+              <Link href="/resources" className="hover:text-primary transition-colors">
+                Tài liệu
+              </Link>
+              <ChevronRight className="w-4 h-4" />
+              <span className="text-foreground font-medium line-clamp-1">{document.title}</span>
+            </div>
+          </div>
+        </div>
+
         <div className="container mx-auto max-w-7xl px-4 py-8">
-          <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600">
-              <div className="flex items-center gap-2">
-                <User className="w-4 h-4" />
-                <span>{document.author}</span>
-              </div>
+          {/* Document Title & Quick Stats */}
+          <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 rounded-2xl shadow-sm p-6 mb-8 border border-border">
+            <div className="flex flex-wrap gap-2 mb-4">
+              <Badge className={`${typeInfo.color} border font-semibold px-3 py-1`}>
+                <DocIcon className="w-3.5 h-3.5 mr-1.5" />
+                {typeInfo.label}
+              </Badge>
+              <Badge className={`${accessInfo.color} border font-semibold px-3 py-1 flex items-center gap-1.5`}>
+                {accessInfo.icon}
+                {accessInfo.label}
+              </Badge>
+              {document.subject && (
+                <Badge className="bg-purple-100 text-purple-700 border-purple-200 border font-semibold px-3 py-1">
+                  <BookOpen className="w-3.5 h-3.5 mr-1.5" />
+                  {document.subject}
+                </Badge>
+              )}
+            </div>
+            
+            <h1 className="text-3xl font-black text-foreground mb-4 leading-tight">
+              {document.title}
+            </h1>
+            
+            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                <span>{document.date}</span>
+                <span>{formatDate(document.uploadDate)}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Eye className="w-4 h-4" />
-                <span>{document.views}</span>
+                <span>{document.viewsCount?.toLocaleString() || 0} lượt xem</span>
               </div>
               <div className="flex items-center gap-2">
-                <DownloadIcon className="w-4 h-4" />
-                <span>{document.downloads}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < Math.floor(document.rating)
-                          ? "fill-yellow-400 text-yellow-400"
-                          : i < document.rating
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "fill-gray-200 text-gray-200"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="font-medium text-gray-900">{document.rating}</span>
-                <span className="text-gray-500">({document.reviewCount} đánh giá)</span>
+                <Clock className="w-4 h-4" />
+                <span>Cập nhật gần đây</span>
               </div>
             </div>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Document Preview & Details */}
-            <div className="lg:col-span-2">
-              <Card className="mb-6">
+            <div className="lg:col-span-2 space-y-6">
+              {/* Document Preview Card */}
+              <Card className="overflow-hidden shadow-lg border-border">
                 <CardContent className="p-0">
-                  <div className="relative aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                  <div className="relative aspect-[16/9] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
                     <div className="text-center">
-                      <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
-                        <Image
-                          src="/placeholder.svg?height=96&width=96"
-                          alt="Document preview"
-                          width={96}
-                          height={96}
-                          className="opacity-50"
-                        />
+                      <div className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-xl">
+                        <DocIcon className="w-12 h-12 text-primary" />
                       </div>
-                      <p className="text-gray-500 text-sm">Xem trước tài liệu</p>
-                      <p className="text-gray-400 text-xs mt-1">Tải xuống để xem toàn bộ nội dung</p>
+                      <p className="text-foreground text-lg font-semibold mb-1">Xem trước tài liệu</p>
+                      <p className="text-muted-foreground text-sm">Mua tài liệu để xem toàn bộ nội dung</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
+              {/* Tags Section */}
+              {tags.length > 0 && (
+                <Card className="shadow-sm border-border">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Tag className="w-4 h-4 text-primary" />
+                      <h3 className="font-bold text-foreground">Từ khóa</h3>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {tags.map((tag, index) => (
+                        <Link key={index} href={`/resources?search=${encodeURIComponent(tag)}`}>
+                          <Badge 
+                            variant="outline" 
+                            className="px-3 py-1.5 hover:bg-primary/10 hover:border-primary transition-colors cursor-pointer"
+                          >
+                            #{tag}
+                          </Badge>
+                        </Link>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Tabs: Description, Details, Reviews */}
               <Tabs defaultValue="description" className="w-full">
                 <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent">
                   <TabsTrigger
                     value="description"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent px-6 py-3"
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 font-semibold"
                   >
                     Mô tả
                   </TabsTrigger>
                   <TabsTrigger
                     value="details"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent px-6 py-3"
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 font-semibold"
                   >
                     Chi tiết
                   </TabsTrigger>
                   <TabsTrigger
                     value="reviews"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent px-6 py-3"
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 font-semibold"
                   >
                     Đánh giá
                   </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="description" className="mt-6">
-                  <Card>
+                  <Card className="shadow-sm border-border">
                     <CardContent className="p-6">
-                      <p className="text-gray-700 mb-6 leading-relaxed">{document.description}</p>
-                      <p className="text-gray-700 mb-4">
-                        Tài liệu này đặc biệt hữu ích cho sinh viên ngành Du lịch, Quản trị Khách sạn, và các nhà nghiên
-                        cứu trong lĩnh vực phát triển du lịch bền vững. Nội dung bao gồm:
-                      </p>
-                      <ul className="space-y-2">
-                        {document.features?.map((feature: any, index: number) => (
-                          <li key={index} className="flex items-start gap-2 text-gray-700">
-                            <span className="text-blue-600 mt-1">•</span>
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      <h3 className="text-xl font-bold text-foreground mb-4">Mô tả tài liệu</h3>
+                      <div className="prose prose-sm max-w-none">
+                        <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                          {document.description || "Chưa có mô tả chi tiết cho tài liệu này."}
+                        </p>
+                      </div>
                     </CardContent>
                   </Card>
                 </TabsContent>
 
                 <TabsContent value="details" className="mt-6">
-                  <Card>
+                  <Card className="shadow-sm border-border">
                     <CardContent className="p-6">
+                      <h3 className="text-xl font-bold text-foreground mb-6">Thông tin chi tiết</h3>
                       <div className="grid md:grid-cols-2 gap-8">
                         {/* Left Column - Basic Info */}
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-4">Thông tin cơ bản</h4>
+                          <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-primary" />
+                            Thông tin cơ bản
+                          </h4>
                           <div className="space-y-3">
-                            <div className="flex justify-between py-2">
-                              <span className="text-gray-600">Số trang:</span>
-                              <span className="font-semibold">{document.pages}</span>
+                            <div className="flex justify-between py-2.5 border-b border-border">
+                              <span className="text-muted-foreground">Loại tài liệu:</span>
+                              <span className="font-semibold text-foreground">{typeInfo.label}</span>
                             </div>
-                            <div className="flex justify-between py-2">
-                              <span className="text-gray-600">Định dạng:</span>
-                              <span className="font-semibold">{document.format}</span>
+                            <div className="flex justify-between py-2.5 border-b border-border">
+                              <span className="text-muted-foreground">Quyền truy cập:</span>
+                              <span className="font-semibold text-foreground">{accessInfo.label}</span>
                             </div>
-                            <div className="flex justify-between py-2">
-                              <span className="text-gray-600">Ngày đăng:</span>
-                              <span className="font-semibold">{document.date}</span>
+                            {document.subject && (
+                              <div className="flex justify-between py-2.5 border-b border-border">
+                                <span className="text-muted-foreground">Môn học:</span>
+                                <span className="font-semibold text-foreground">{document.subject}</span>
+                              </div>
+                            )}
+                            <div className="flex justify-between py-2.5 border-b border-border">
+                              <span className="text-muted-foreground">Ngày đăng:</span>
+                              <span className="font-semibold text-foreground">{formatDate(document.uploadDate)}</span>
                             </div>
-                            <div className="flex justify-between py-2">
-                              <span className="text-gray-600">Tác giả:</span>
-                              <span className="font-semibold">{document.author}</span>
+                            <div className="flex justify-between py-2.5">
+                              <span className="text-muted-foreground">Định dạng:</span>
+                              <span className="font-semibold text-foreground">PDF</span>
                             </div>
                           </div>
                         </div>
 
                         {/* Right Column - Statistics */}
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-4">Thống kê</h4>
+                          <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+                            <BarChart3 className="w-5 h-5 text-primary" />
+                            Thống kê
+                          </h4>
                           <div className="space-y-3">
-                            <div className="flex justify-between py-2">
-                              <span className="text-gray-600">Lượt xem:</span>
-                              <span className="font-semibold">{document.views}</span>
+                            <div className="flex justify-between py-2.5 border-b border-border">
+                              <span className="text-muted-foreground">Lượt xem:</span>
+                              <span className="font-semibold text-foreground">{document.viewsCount?.toLocaleString() || 0}</span>
                             </div>
-                            <div className="flex justify-between py-2">
-                              <span className="text-gray-600">Lượt tải:</span>
-                              <span className="font-semibold">{document.downloads}</span>
+                            <div className="flex justify-between py-2.5 border-b border-border">
+                              <span className="text-muted-foreground">Giá:</span>
+                              <span className="font-semibold text-primary">{formatPrice(document.price)}</span>
                             </div>
-                            <div className="flex justify-between py-2">
-                              <span className="text-gray-600">Đánh giá:</span>
-                              <span className="font-semibold">{document.rating}/5</span>
-                            </div>
-                            <div className="flex justify-between py-2">
-                              <span className="text-gray-600">Số lượng đánh giá:</span>
-                              <span className="font-semibold">{document.reviewCount}</span>
+                            <div className="flex justify-between py-2.5 border-b border-border">
+                              <span className="text-muted-foreground">Trạng thái:</span>
+                              <Badge className="bg-green-100 text-green-700 border-green-200">
+                                Đang hoạt động
+                              </Badge>
                             </div>
                           </div>
                         </div>
@@ -237,174 +398,233 @@ export default function DocumentDetailPage() {
                 </TabsContent>
 
                 <TabsContent value="reviews" className="mt-6">
-                  <Card>
+                  <Card className="shadow-sm border-border">
                     <CardContent className="p-6">
+                      <h3 className="text-xl font-bold text-foreground mb-6">Đánh giá từ người dùng</h3>
+                      
                       {/* Rating Summary */}
-                      <div className="mb-6 pb-6 border-b">
+                      <div className="mb-6 pb-6 border-b border-border">
                         <div className="flex items-center gap-2 mb-2">
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`w-5 h-5 ${
-                                i < Math.floor(document.rating)
-                                  ? "fill-yellow-400 text-yellow-400"
-                                  : i < document.rating
-                                    ? "fill-yellow-400 text-yellow-400"
-                                    : "fill-gray-200 text-gray-200"
-                              }`}
+                              className="w-5 h-5 fill-yellow-400 text-yellow-400"
                             />
                           ))}
-                          <span className="text-xl font-bold text-gray-900 ml-2">{document.rating} trên 5</span>
+                          <span className="text-xl font-bold text-foreground ml-2">5.0 trên 5</span>
                         </div>
-                        <p className="text-sm text-gray-600">Dựa trên {document.reviewCount} đánh giá</p>
+                        <p className="text-sm text-muted-foreground">Chưa có đánh giá nào</p>
                       </div>
 
                       {/* Write Review Button */}
-                      <Button className="w-full mb-6 bg-blue-600 hover:bg-blue-700 text-white">
+                      <Button className="w-full mb-6 bg-primary hover:bg-accent text-primary-foreground">
                         <MessageSquare className="w-4 h-4 mr-2" />
-                        Viết đánh giá
+                        Viết đánh giá đầu tiên
                       </Button>
 
                       {/* Reviews List */}
-                      <div className="space-y-6">
-                        {reviews.map((review) => (
-                          <div key={review.id} className="pb-6 border-b last:border-b-0">
-                            <div className="flex items-start gap-3 mb-3">
-                              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                <User className="w-5 h-5 text-gray-500" />
-                              </div>
-                              <div className="flex-1">
-                                <div className="flex items-center justify-between mb-1">
-                                  <h5 className="font-semibold text-gray-900">{review.author}</h5>
-                                  <div className="flex items-center gap-1">
-                                    {[...Array(5)].map((_, i) => (
-                                      <Star
-                                        key={i}
-                                        className={`w-4 h-4 ${
-                                          i < review.rating
-                                            ? "fill-yellow-400 text-yellow-400"
-                                            : "fill-gray-200 text-gray-200"
-                                        }`}
-                                      />
-                                    ))}
-                                  </div>
+                      {reviews.length === 0 ? (
+                        <div className="text-center py-12 bg-muted/30 rounded-lg">
+                          <Star className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                          <p className="text-muted-foreground">Chưa có đánh giá nào cho tài liệu này</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-6">
+                          {reviews.map((review) => (
+                            <div key={review.id} className="pb-6 border-b border-border last:border-b-0">
+                              <div className="flex items-start gap-3 mb-3">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <User className="w-5 h-5 text-primary" />
                                 </div>
-                                <p className="text-sm text-gray-700 mb-2">{review.comment}</p>
-                                <p className="text-xs text-gray-500">{review.date}</p>
+                                <div className="flex-1">
+                                  <div className="flex items-center justify-between mb-1">
+                                    <h5 className="font-semibold text-foreground">{review.author}</h5>
+                                    <div className="flex items-center gap-1">
+                                      {[...Array(5)].map((_, i) => (
+                                        <Star
+                                          key={i}
+                                          className={`w-4 h-4 ${
+                                            i < review.rating
+                                              ? "fill-yellow-400 text-yellow-400"
+                                              : "fill-gray-200 text-gray-200"
+                                          }`}
+                                        />
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <p className="text-sm text-muted-foreground mb-2">{review.comment}</p>
+                                  <p className="text-xs text-muted-foreground">{review.date}</p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Load More Button */}
-                      <Button variant="outline" className="w-full mt-6 border-gray-300 hover:bg-gray-50 bg-transparent">
-                        Xem thêm đánh giá
-                      </Button>
+                          ))}
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </TabsContent>
               </Tabs>
 
               {/* Related Documents */}
-              <div className="mt-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Tài liệu liên quan</h3>
-                <div className="grid md:grid-cols-3 gap-6">
-                  {relatedDocuments.map((doc) => (
-                    <Link key={doc.id} href={`/documents/${doc.id}`}>
-                      <Card className="group hover:shadow-lg transition-all duration-300 h-full">
-                        <CardContent className="p-0">
-                          <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg">
-                            <Image
-                              src={doc.thumbnail || "/placeholder.svg"}
-                              alt={doc.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                            <Badge className="absolute top-3 left-3 bg-emerald-500 hover:bg-emerald-600 text-white border-0">
-                              {doc.date}
-                            </Badge>
-                          </div>
-                          <div className="p-4">
-                            <h4 className="font-semibold text-sm text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                              {doc.title}
-                            </h4>
-                            <div className="flex items-center gap-4 text-xs text-gray-500">
-                              <div className="flex items-center gap-1">
-                                <Eye className="w-3 h-3" />
-                                <span>{doc.views}</span>
+              {relatedDocuments.length > 0 && (
+                <div className="mt-8">
+                  <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+                    <FileText className="w-6 h-6 text-primary" />
+                    Tài liệu liên quan
+                  </h3>
+                  <div className="grid md:grid-cols-3 gap-6">
+                    {relatedDocuments.map((doc) => {
+                      const relatedTypeInfo = getDocumentTypeLabel(doc.type)
+                      const RelatedIcon = getDocumentIcon(doc.type)
+                      
+                      return (
+                        <Link key={doc.documentID} href={`/documents/${doc.documentID}`}>
+                          <Card className="group hover:shadow-xl transition-all duration-300 h-full border-border hover:border-primary/50">
+                            <CardContent className="p-0">
+                              <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+                                <div className="absolute inset-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                  <RelatedIcon className="w-16 h-16 text-primary/40" />
+                                </div>
+                                <Badge className={`absolute top-3 left-3 ${relatedTypeInfo.color} border font-semibold`}>
+                                  {relatedTypeInfo.label}
+                                </Badge>
+                                {doc.price === 0 && (
+                                  <Badge className="absolute top-3 right-3 bg-green-500 hover:bg-green-600 text-white border-0">
+                                    Miễn phí
+                                  </Badge>
+                                )}
                               </div>
-                              <div className="flex items-center gap-1">
-                                <DownloadIcon className="w-3 h-3" />
-                                <span>{doc.downloads}</span>
+                              <div className="p-4">
+                                <h4 className="font-semibold text-sm text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
+                                  {doc.title}
+                                </h4>
+                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                  <div className="flex items-center gap-1">
+                                    <Eye className="w-3 h-3" />
+                                    <span>{doc.viewsCount?.toLocaleString() || 0}</span>
+                                  </div>
+                                  <div className="font-semibold text-primary">
+                                    {formatPrice(doc.price)}
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  ))}
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Right Column - Pricing & Actions */}
             <div className="lg:col-span-1">
-              <Card className="sticky top-4">
-                <CardContent className="p-6">
-                  <div className="text-center mb-6">
-                    <div className="text-4xl font-bold text-emerald-500 mb-1">{document.price}</div>
-                    <p className="text-sm text-gray-500">Giá đã bao gồm VAT</p>
+              <Card className="sticky top-4 shadow-xl border-border overflow-hidden">
+                <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 p-6 border-b border-border">
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground mb-2 font-medium">Giá tài liệu</p>
+                    <div className="text-4xl font-black text-primary mb-1">
+                      {formatPrice(document.price)}
+                    </div>
+                    {document.price > 0 && (
+                      <p className="text-xs text-muted-foreground">Đã bao gồm VAT</p>
+                    )}
                   </div>
-
-                  <DocumentActions documentId={document.id} price={document.price} />
+                </div>
+                
+                <CardContent className="p-6 space-y-3">
+                  <DocumentActions documentId={document.documentID} price={document.price} />
 
                   <Button
                     variant="outline"
-                    className="w-full mb-3 h-12 border-gray-300 hover:bg-gray-50 bg-transparent"
+                    className="w-full h-12 border-border hover:bg-muted hover:border-primary/50 transition-all group"
                   >
-                    <Heart className="w-5 h-5 mr-2" />
+                    <Heart className="w-5 h-5 mr-2 group-hover:text-red-500 transition-colors" />
                     Thêm vào yêu thích
                   </Button>
 
                   <Button
                     variant="outline"
-                    className="w-full mb-6 h-12 border-gray-300 hover:bg-gray-50 bg-transparent"
+                    className="w-full h-12 border-border hover:bg-muted hover:border-primary/50 transition-all group"
                   >
-                    <Share2 className="w-5 h-5 mr-2" />
+                    <Share2 className="w-5 h-5 mr-2 group-hover:text-primary transition-colors" />
                     Chia sẻ
                   </Button>
 
-                  <div className="border-t pt-6">
-                    <h4 className="font-semibold text-gray-900 mb-4">Thông tin tài liệu</h4>
+                  <div className="border-t border-border pt-6 mt-6">
+                    <h4 className="font-bold text-foreground mb-4 flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-primary" />
+                      Thông tin tài liệu
+                    </h4>
                     <div className="space-y-3 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Số trang:</span>
-                        <span className="font-medium">{document.pages}</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Loại:</span>
+                        <Badge className={`${typeInfo.color} border text-xs`}>
+                          {typeInfo.label}
+                        </Badge>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Định dạng:</span>
-                        <span className="font-medium">{document.format}</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Truy cập:</span>
+                        <Badge className={`${accessInfo.color} border text-xs flex items-center gap-1`}>
+                          {accessInfo.icon}
+                          {accessInfo.label}
+                        </Badge>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Ngày đăng:</span>
-                        <span className="font-medium">{document.date}</span>
+                      {document.subject && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Môn học:</span>
+                          <span className="font-semibold text-foreground">{document.subject}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Ngày đăng:</span>
+                        <span className="font-medium text-foreground text-xs">{formatDate(document.uploadDate)}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Tác giả:</span>
-                        <span className="font-medium">{document.author}</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Lượt xem:</span>
+                        <span className="font-semibold text-foreground">{document.viewsCount?.toLocaleString() || 0}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="border-t mt-6 pt-6">
-                    <h4 className="font-semibold text-gray-900 mb-3">Hỗ trợ khách hàng</h4>
-                    <p className="text-sm text-gray-600 mb-3">
-                      Nếu bạn có bất kỳ câu hỏi nào về tài liệu này, vui lòng liên hệ với chúng tôi.
+                  <div className="border-t border-border mt-6 pt-6">
+                    <h4 className="font-bold text-foreground mb-3 flex items-center gap-2">
+                      <MessageSquare className="w-5 h-5 text-primary" />
+                      Hỗ trợ khách hàng
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                      Cần hỗ trợ về tài liệu này? Đội ngũ của chúng tôi luôn sẵn sàng giúp đỡ bạn.
                     </p>
-                    <Link href="/contact" className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">
-                      Liên hệ hỗ trợ →
+                    <Link href="/contact">
+                      <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all">
+                        Liên hệ hỗ trợ →
+                      </Button>
                     </Link>
+                  </div>
+
+                  {/* Additional Info */}
+                  <div className="border-t border-border mt-6 pt-6">
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <h5 className="font-semibold text-foreground text-sm mb-2 flex items-center gap-2">
+                        <Shield className="w-4 h-4 text-primary" />
+                        Cam kết chất lượng
+                      </h5>
+                      <ul className="text-xs text-muted-foreground space-y-1.5">
+                        <li className="flex items-start gap-2">
+                          <span className="text-primary mt-0.5">✓</span>
+                          <span>Nội dung chính xác, cập nhật</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-primary mt-0.5">✓</span>
+                          <span>Hỗ trợ tải xuống nhanh chóng</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-primary mt-0.5">✓</span>
+                          <span>Bảo mật thông tin người dùng</span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
