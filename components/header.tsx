@@ -137,7 +137,7 @@ function HeaderComponent() {
                   isActive("/courses") ? "text-primary font-semibold" : "text-foreground",
                 )}
               >
-                Khóa Học
+                Quản Lý Tài Liệu
               </Link>
               <Link
                 href="/blog"
