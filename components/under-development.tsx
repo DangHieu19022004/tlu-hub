@@ -51,7 +51,7 @@ export function UnderDevelopment() {
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed">
             Chúng tôi đang nỗ lực hoàn thiện trang này để mang đến trải nghiệm tốt nhất cho bạn. 
-            Hãy quay lại sau nhé! 🚀
+            Hãy quay lại sau nhé!
           </p>
         </motion.div>
 
