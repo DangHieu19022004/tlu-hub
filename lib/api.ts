@@ -1,18 +1,33 @@
-// Environment-aware API client helper
-// - Uses NEXT_PUBLIC_API_BASE when provided (for deploy overrides)
-// - Defaults to http://localhost:8080 in development
-// - Exposes apiFetch and several typed helpers for common endpoints
+/**
+ * API Client for TLU Hub Backend
+ * Enterprise-grade configuration with environment variable support
+ * Supports authentication, error handling, and request/response logging
+ */
+
+import type {
+  LoginRequestDto,
+  LoginResponse,
+  Document,
+  Student,
+  Transaction,
+  CreateTransactionRequestDto,
+  ApiResponse,
+  ApiException,
+  StudentInfo,
+  BalanceResponse,
+} from "./types"
 
 type FetchOptions = RequestInit & { query?: Record<string, string | number | boolean> }
 
-const DEFAULT_LOCAL = "http://localhost:8080"
+// ============================================================================
+// CONFIGURATION
+// ============================================================================
 
-// Set this to true to use Next.js proxy (bypasses CORS)
-const USE_PROXY = true  // ← CHANGED TO TRUE
+const DEFAULT_API_BASE = "http://localhost:5178"
+const DEFAULT_TIMEOUT = 30000 // 30 seconds
 
 function getEnvIsDev() {
   try {
-    // In Next.js client code, process.env.NODE_ENV is replaced at build time
     return process.env.NODE_ENV !== "production"
   } catch {
     return true
@@ -24,28 +39,31 @@ export const ApiConfig = {
     return getEnvIsDev()
   },
   get baseUrl() {
-    // Allow overriding with NEXT_PUBLIC_API_BASE for production or staging deployments
-    if (typeof process !== "undefined" && process.env && process.env.NEXT_PUBLIC_API_BASE) {
-      return process.env.NEXT_PUBLIC_API_BASE
+    // Read from environment variable (NEXT_PUBLIC_ prefix for client-side access)
+    const envBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
+    if (envBaseUrl) {
+      return envBaseUrl.replace(/\/$/, "") // Remove trailing slash
     }
-    // Use proxy if enabled (for CORS bypass in development)
-    if (USE_PROXY && typeof window !== "undefined") {
-      return "" // Empty string means same origin, Next.js will proxy to backend
-    }
-    return this.isDev ? DEFAULT_LOCAL : "https://api.example.com"
+    return DEFAULT_API_BASE
+  },
+  get timeout() {
+    const envTimeout = process.env.NEXT_PUBLIC_API_TIMEOUT
+    return envTimeout ? parseInt(envTimeout, 10) : DEFAULT_TIMEOUT
+  },
+  get debug() {
+    return process.env.NEXT_PUBLIC_API_DEBUG === "true" || this.isDev
   },
 }
 
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
 function buildUrl(path: string, query?: Record<string, string | number | boolean>) {
-  const base = ApiConfig.baseUrl.replace(/\/$/, "")
-  let p = path.startsWith("/") ? path : `/${path}`
-  
-  // If using proxy, prepend /api-proxy to the path
-  if (USE_PROXY && typeof window !== "undefined") {
-    p = p.replace(/^\/api/, "/api-proxy")
-  }
-  
+  const base = ApiConfig.baseUrl
+  const p = path.startsWith("/") ? path : `/${path}`
   let url = `${base}${p}`
+  
   if (query && Object.keys(query).length) {
     const params = new URLSearchParams()
     Object.entries(query).forEach(([k, v]) => params.append(k, String(v)))
@@ -54,87 +72,389 @@ function buildUrl(path: string, query?: Record<string, string | number | boolean
   return url
 }
 
-async function apiFetch(path: string, options: FetchOptions = {}) {
-  const { query, headers, ...rest } = options
-  const url = buildUrl(path, query)
-
-  const token = typeof window !== "undefined" ? localStorage.getItem("tlu-hub-token") : null
-
-  const defaultHeaders: Record<string, string> = {
-    "Content-Type": "application/json",
-  }
-  if (token) defaultHeaders["Authorization"] = `Bearer ${token}`
-
-  console.log("📡 API Request:", { url, method: rest.method || "GET", body: rest.body })
-
-  const res = await fetch(url, {
-    headers: { ...defaultHeaders, ...(headers as Record<string, string> | undefined) },
-    credentials: "include",
-    ...rest,
-  })
-
-  const text = await res.text()
-  const contentType = res.headers.get("content-type") || ""
-  let data: any = text
-  if (contentType.includes("application/json") && text) {
-    try {
-      data = JSON.parse(text)
-    } catch {
-      data = text
-    }
-  }
-  
-  console.log("📡 API Response:", { status: res.status, ok: res.ok, data })
-  
-  if (!res.ok) {
-    const err: any = new Error(data?.message || `API request failed: ${res.status} ${res.statusText}`)
-    err.status = res.status
-    err.data = data
-    throw err
-  }
-  return data
+function getAuthToken(): string | null {
+  if (typeof window === "undefined") return null
+  return localStorage.getItem("tlu-hub-token")
 }
 
-// High-level helper functions (paths may be adapted easily)
+function logRequest(method: string, url: string, body?: any) {
+  if (!ApiConfig.debug) return
+  console.log("📡 API Request:", {
+    method,
+    url,
+    body: body ? JSON.parse(body) : undefined,
+    timestamp: new Date().toISOString(),
+  })
+}
+
+function logResponse(status: number, ok: boolean, data: any, duration: number) {
+  if (!ApiConfig.debug) return
+  console.log("📡 API Response:", {
+    status,
+    ok,
+    data,
+    duration: `${duration}ms`,
+    timestamp: new Date().toISOString(),
+  })
+}
+
+// ============================================================================
+// CORE API FETCH FUNCTION
+// ============================================================================
+
+async function apiFetch<T = any>(path: string, options: FetchOptions = {}): Promise<T> {
+  const { query, headers, ...rest } = options
+  const url = buildUrl(path, query)
+  const token = getAuthToken()
+
+  const defaultHeaders: Record<string, string> = {
+    "Content-Type": "application/json; charset=utf-8",
+    "Accept": "application/json; charset=utf-8",
+  }
+  if (token) {
+    defaultHeaders["Authorization"] = `Bearer ${token}`
+  }
+
+  const startTime = Date.now()
+  logRequest(rest.method || "GET", url, rest.body)
+
+  try {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), ApiConfig.timeout)
+
+    const res = await fetch(url, {
+      headers: { ...defaultHeaders, ...(headers as Record<string, string> | undefined) },
+      credentials: "include",
+      signal: controller.signal,
+      ...rest,
+    })
+
+    clearTimeout(timeoutId)
+
+    const contentType = res.headers.get("content-type") || ""
+    let data: any = null
+
+    if (contentType.includes("application/json")) {
+      // Use res.json() instead of res.text() for proper UTF-8 handling
+      try {
+        data = await res.json()
+      } catch (jsonError) {
+        // Fallback to text if JSON parsing fails
+        const text = await res.text()
+        data = text || null
+      }
+    } else {
+      data = await res.text()
+    }
+
+    const duration = Date.now() - startTime
+    logResponse(res.status, res.ok, data, duration)
+
+    if (!res.ok) {
+      const error: ApiException = {
+        name: "ApiException",
+        message: data?.message || `API request failed: ${res.status} ${res.statusText}`,
+        status: res.status,
+        data,
+      }
+      throw error
+    }
+
+    return data as T
+  } catch (err: any) {
+    const duration = Date.now() - startTime
+    
+    if (err.name === "AbortError") {
+      const timeoutError = {
+        name: "ApiException",
+        message: "Server không phản hồi",
+        status: 408,
+        data: null,
+      }
+      
+      if (ApiConfig.debug) {
+        console.warn("⚠️ API Timeout:", { 
+          url, 
+          duration: `${duration}ms`,
+          timeout: `${ApiConfig.timeout}ms`,
+        })
+      }
+      
+      throw timeoutError
+    }
+
+    // Network error or fetch failed
+    if (!err.status) {
+      const networkError = {
+        name: "ApiException",
+        message: err.message || "Network error - Unable to connect to server",
+        status: 0,
+        data: null,
+      }
+      
+      if (ApiConfig.debug) {
+        console.warn("⚠️ API Network Error:", {
+          url,
+          message: err.message,
+          duration,
+        })
+      }
+      
+      throw networkError
+    }
+
+    if (ApiConfig.debug) {
+      console.warn("⚠️ API Error:", {
+        url,
+        error: err.message,
+        status: err.status,
+        data: err.data,
+        duration,
+      })
+    }
+
+    throw err
+  }
+}
+
+// ============================================================================
+// API ENDPOINTS
+// ============================================================================
+
 export const api = {
-  // Auth - Backend expects userName and password
-  login: async (studentId: string, password: string) => {
-    return apiFetch(`/api/Auth/login`, { 
-      method: "POST", 
-      body: JSON.stringify({ 
-        userName: studentId,  // Backend expects "userName" field
-        password 
-      }) 
+  // ========== AUTH ENDPOINTS ==========
+  
+  /**
+   * Login with studentId and password
+   * POST /api/Auth/login
+   */
+  login: async (studentId: string, password: string): Promise<LoginResponse> => {
+    const payload: LoginRequestDto = {
+      userName: studentId, // Backend expects userName field
+      password,
+    }
+    return apiFetch<LoginResponse>("/api/Auth/login", {
+      method: "POST",
+      body: JSON.stringify(payload),
     })
   },
-  logout: async () => {
-    return apiFetch(`/api/Auth/logout`, { method: "POST" })
+
+  /**
+   * Logout user
+   * POST /api/Auth/Logout/{studentId}
+   */
+  logout: async (studentId: string): Promise<ApiResponse> => {
+    return apiFetch<ApiResponse>(`/api/Auth/Logout/${encodeURIComponent(studentId)}`, {
+      method: "POST",
+    })
   },
 
-  // Documents
-  getDocumentById: async (documentId: string) => {
-    return apiFetch(`/api/Document/${encodeURIComponent(documentId)}`, { method: "GET" })
-  },
-  getDocumentAccess: async (documentId: string, studentId: string) => {
-    return apiFetch(`/api/Document/access`, { method: "GET", query: { documentId, studentId } })
-  },
-  searchDocuments: async (keyword: string) => {
-    return apiFetch(`/api/Document/search`, { method: "GET", query: { keyword } })
+  // ========== DOCUMENT ENDPOINTS ==========
+
+  /**
+   * Get document by ID
+   * GET /api/Document/{id}
+   */
+  getDocumentById: async (documentId: string): Promise<Document> => {
+    return apiFetch<Document>(`/api/Document/${encodeURIComponent(documentId)}`, {
+      method: "GET",
+    })
   },
 
-  // Student
-  getStudentDocuments: async (studentId: string) => {
-    console.log("📚 Calling getStudentDocuments with studentId:", studentId)
-    return apiFetch(`/api/Student/ViewDocuments/${encodeURIComponent(studentId)}`, { method: "GET" })
+  /**
+   * Create new document
+   * POST /api/Document
+   */
+  createDocument: async (document: Partial<Document>): Promise<ApiResponse<Document>> => {
+    return apiFetch<ApiResponse<Document>>("/api/Document", {
+      method: "POST",
+      body: JSON.stringify(document),
+    })
   },
-  upgradeVip: async (studentId: string, payload: any) => {
-    return apiFetch(`/api/Student/${encodeURIComponent(studentId)}/upgrade-vip`, { method: "PUT", body: JSON.stringify(payload) })
+
+  /**
+   * Update document
+   * PUT /api/Document
+   */
+  updateDocument: async (document: Document): Promise<ApiResponse<Document>> => {
+    return apiFetch<ApiResponse<Document>>("/api/Document", {
+      method: "PUT",
+      body: JSON.stringify(document),
+    })
   },
-  rechargeAccount: async (payload: any) => {
-    return apiFetch(`/api/Student/recharge`, { method: "POST", body: JSON.stringify(payload) })
+
+  /**
+   * Delete document
+   * DELETE /api/Document/{documentId}
+   */
+  deleteDocument: async (documentId: string): Promise<ApiResponse> => {
+    return apiFetch<ApiResponse>(`/api/Document/${encodeURIComponent(documentId)}`, {
+      method: "DELETE",
+    })
   },
-  purchaseDocument: async (payload: any) => {
-    return apiFetch(`/api/Student/purchase-document`, { method: "POST", body: JSON.stringify(payload) })
+
+  /**
+   * Get document access link
+   * GET /api/Document/access-link?studentId=...&documentId=...
+   */
+  getDocumentAccessLink: async (studentId: string, documentId: string): Promise<ApiResponse<string>> => {
+    return apiFetch<ApiResponse<string>>("/api/Document/access-link", {
+      method: "GET",
+      query: { studentId, documentId },
+    })
+  },
+
+  /**
+   * Search documents by keyword
+   * GET /api/Document/search?keyword=...&limit=...
+   */
+  searchDocuments: async (keyword: string, limit: number = 50): Promise<ApiResponse<Document[]>> => {
+    return apiFetch<ApiResponse<Document[]>>("/api/Document/search", {
+      method: "GET",
+      query: { keyword, limit },
+    })
+  },
+
+  /**
+   * Get top documents
+   * GET /api/Document/top-document
+   */
+  getTopDocuments: async (): Promise<ApiResponse<Document[]>> => {
+    return apiFetch<ApiResponse<Document[]>>("/api/Document/top-document", {
+      method: "GET",
+    })
+  },
+
+  // ========== STUDENT ENDPOINTS ==========
+
+  /**
+   * Check VIP status
+   * GET /api/Student/CheckVIPStatus/{studentId}
+   */
+  checkVIPStatus: async (studentId: string): Promise<ApiResponse<{ isVIP: boolean; expiryDate?: string }>> => {
+    return apiFetch<ApiResponse<{ isVIP: boolean; expiryDate?: string }>>(
+      `/api/Student/CheckVIPStatus/${encodeURIComponent(studentId)}`,
+      {
+        method: "GET",
+      }
+    )
+  },
+
+  /**
+   * View student's documents
+   * GET /api/Student/ViewDocuments/{studentId}
+   */
+  getStudentDocuments: async (studentId: string): Promise<ApiResponse<Document[]>> => {
+    return apiFetch<ApiResponse<Document[]>>(`/api/Student/ViewDocuments/${encodeURIComponent(studentId)}`, {
+      method: "GET",
+    })
+  },
+
+  /**
+   * Upgrade to VIP
+   * PUT /api/Student/UpgradeToVIP/{studentId}
+   */
+  upgradeToVIP: async (studentId: string): Promise<ApiResponse> => {
+    return apiFetch<ApiResponse>(`/api/Student/UpgradeToVIP/${encodeURIComponent(studentId)}`, {
+      method: "PUT",
+    })
+  },
+
+  /**
+   * Recharge account
+   * POST /api/Student/RechargeAccount/{studentId}?amount=...
+   */
+  rechargeAccount: async (studentId: string, amount: number): Promise<ApiResponse> => {
+    return apiFetch<ApiResponse>(`/api/Student/RechargeAccount/${encodeURIComponent(studentId)}`, {
+      method: "POST",
+      query: { amount },
+    })
+  },
+
+  /**
+   * Purchase document
+   * POST /api/Student/PurchaseDocument/{studentId}/{documentId}
+   */
+  purchaseDocument: async (studentId: string, documentId: string): Promise<ApiResponse> => {
+    return apiFetch<ApiResponse>(
+      `/api/Student/PurchaseDocument/${encodeURIComponent(studentId)}/${encodeURIComponent(documentId)}`,
+      {
+        method: "POST",
+      }
+    )
+  },
+
+  /**
+   * Get student info
+   * GET /api/Student/info/{studentId}
+   */
+  getStudentInfo: async (studentId: string): Promise<StudentInfo> => {
+    return apiFetch<StudentInfo>(`/api/Student/info/${encodeURIComponent(studentId)}`, {
+      method: "GET",
+    })
+  },
+
+  /**
+   * Get student balance
+   * GET /api/Student/{studentId}/balance
+   */
+  getStudentBalance: async (studentId: string): Promise<BalanceResponse> => {
+    return apiFetch<BalanceResponse>(`/api/Student/${encodeURIComponent(studentId)}/balance`, {
+      method: "GET",
+    })
+  },
+
+  // ========== TRANSACTION ENDPOINTS ==========
+
+  /**
+   * Create transaction
+   * POST /api/Transaction
+   */
+  createTransaction: async (transaction: CreateTransactionRequestDto): Promise<ApiResponse<Transaction>> => {
+    return apiFetch<ApiResponse<Transaction>>("/api/Transaction", {
+      method: "POST",
+      body: JSON.stringify(transaction),
+    })
+  },
+
+  /**
+   * Get transaction by ID
+   * GET /api/Transaction/{transactionId}
+   */
+  getTransaction: async (transactionId: string): Promise<ApiResponse<Transaction>> => {
+    return apiFetch<ApiResponse<Transaction>>(`/api/Transaction/${encodeURIComponent(transactionId)}`, {
+      method: "GET",
+    })
+  },
+
+  /**
+   * Get pending transactions
+   * GET /api/Transaction/pending
+   */
+  getPendingTransactions: async (): Promise<ApiResponse<Transaction[]>> => {
+    return apiFetch<ApiResponse<Transaction[]>>("/api/Transaction/pending", {
+      method: "GET",
+    })
+  },
+
+  /**
+   * Verify transaction
+   * PUT /api/Transaction/verify/{transactionId}
+   */
+  verifyTransaction: async (transactionId: string): Promise<ApiResponse> => {
+    return apiFetch<ApiResponse>(`/api/Transaction/verify/${encodeURIComponent(transactionId)}`, {
+      method: "PUT",
+    })
+  },
+
+  /**
+   * Cancel transaction
+   * PUT /api/Transaction/cancel/{transactionId}
+   */
+  cancelTransaction: async (transactionId: string): Promise<ApiResponse> => {
+    return apiFetch<ApiResponse>(`/api/Transaction/cancel/${encodeURIComponent(transactionId)}`, {
+      method: "PUT",
+    })
   },
 }
 

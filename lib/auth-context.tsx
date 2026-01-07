@@ -2,30 +2,26 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { api } from "./api"
+import type { LoginResponse } from "./types"
+import { toast } from "@/hooks/use-toast"
 
 interface User {
+  studentId: string
   email: string
   name: string
   image: string
-  studentId?: string // Add studentId field
+  isVIP: boolean
+  balance: number
 }
 
 interface AuthContextType {
   user: User | null
-  login: (studentId: string, password: string) => Promise<boolean> // Changed from email to studentId
-  logout: () => void
+  login: (studentId: string, password: string) => Promise<boolean>
+  logout: () => Promise<void>
   isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-const DEMO_USER = {
-  studentId: "2251961779",
-  email: "user1@e.tlu.edu.vn",
-  password: "123",
-  name: "User1",
-  image: "https://api.dicebear.com/7.x/avataaars/svg?seed=user1",
-}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
@@ -34,7 +30,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const storedUser = localStorage.getItem("tlu-hub-user")
     if (storedUser) {
-      setUser(JSON.parse(storedUser))
+      try {
+        setUser(JSON.parse(storedUser))
+      } catch {
+        localStorage.removeItem("tlu-hub-user")
+      }
     }
     setIsLoading(false)
   }, [])
@@ -42,83 +42,94 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (studentId: string, password: string): Promise<boolean> => {
     setIsLoading(true)
     try {
-      // Try server login first
-      console.log("🔐 Calling API login with:", { studentId, password: "***" })
-      const res: any = await api.login(studentId, password)
-      console.log("✅ API login response (raw):", res)
-      console.log("✅ API login response (stringified):", JSON.stringify(res, null, 2))
-      console.log("✅ Response type:", typeof res)
-      console.log("✅ Response keys:", res ? Object.keys(res) : "null")
-      
-      // IMPORTANT: Log to see what fields backend actually returns
-      // Backend might return different field names than expected
-      
-      // Check if response indicates success
-      // Try to be flexible with response format
-      if (res !== null && res !== undefined) {
-        console.log("✅ Response is not null/undefined, processing...")
-        
-        const userData: User = {
-          studentId: res.user?.studentId ?? res.studentId ?? res.student_id ?? res.id ?? studentId,
-          email: res.user?.email ?? res.email ?? `${studentId}@e.tlu.edu.vn`,
-          name: res.user?.name ?? res.name ?? res.username ?? res.studentName ?? res.student_name ?? res.fullName ?? res.full_name ?? `Student ${studentId}`,
-          image: res.user?.image ?? res.image ?? res.avatar ?? res.avatarUrl ?? DEMO_USER.image,
-        }
-        console.log("👤 Setting user data:", userData)
-        setUser(userData)
-        localStorage.setItem("tlu-hub-user", JSON.stringify(userData))
-        
-        // Save token if exists
-        const token = res.token ?? res.accessToken ?? res.access_token ?? res.jwt ?? res.bearer
-        if (token) {
-          console.log("🔑 Saving token:", token.substring(0, 20) + "...")
-          localStorage.setItem("tlu-hub-token", token)
-        } else {
-          console.warn("⚠️ No token found in response")
-        }
-        
-        setIsLoading(false)
-        return true
-      } else {
-        console.error("❌ Response is null or undefined")
+      const response = await api.login(studentId, password)
+
+      // Parse response based on backend structure
+      const userData: User = {
+        studentId: response.user?.studentId || studentId,
+        email: response.user?.email || `${studentId}@e.tlu.edu.vn`,
+        name: response.user?.name || `Student ${studentId}`,
+        image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${studentId}`,
+        isVIP: response.user?.isVIP || false,
+        balance: response.user?.balance || 0,
       }
-    } catch (err: any) {
-      // If API fails (dev mode or server unreachable), fallback to demo credentials for local development
-      // This keeps existing demo flow intact while wiring in real API usage when available.
-      // Only allow fallback if credentials match demo user.
-      // eslint-disable-next-line no-console
-      console.warn("❌ API login failed:", {
-        message: err.message,
-        status: err.status,
-        data: err.data
+
+      setUser(userData)
+      localStorage.setItem("tlu-hub-user", JSON.stringify(userData))
+
+      // Save token
+      if (response.token) {
+        localStorage.setItem("tlu-hub-token", response.token)
+      }
+
+      // Show success toast
+      toast({
+        variant: "success" as any,
+        title: "Đăng nhập thành công!",
+        description: `Chào mừng ${userData.name} quay lại TLU Hub`,
       })
-      if (studentId === DEMO_USER.studentId && password === DEMO_USER.password) {
-        console.log("✅ Using demo fallback")
-        const userData = {
-          studentId: DEMO_USER.studentId,
-          email: DEMO_USER.email,
-          name: DEMO_USER.name,
-          image: DEMO_USER.image,
-        }
-        setUser(userData)
-        localStorage.setItem("tlu-hub-user", JSON.stringify(userData))
-        setIsLoading(false)
-        return true
+
+      setIsLoading(false)
+      return true
+    } catch (error: any) {
+      console.error("Login failed:", error)
+      setIsLoading(false)
+      
+      // Show error toast with detailed message
+      let errorMessage = "Đăng nhập thất bại. Vui lòng thử lại."
+      
+      if (error.status === 408) {
+        errorMessage = "Server không phản hồi. Vui lòng kiểm tra backend hoặc kết nối mạng."
+      } else if (error.status === 0) {
+        errorMessage = "Không thể kết nối đến server. Vui lòng kiểm tra backend đã chạy chưa."
+      } else if (error.status === 401 || error.status === 400) {
+        errorMessage = "Mã sinh viên hoặc mật khẩu không chính xác"
+      } else if (error.status >= 500) {
+        errorMessage = "Lỗi server. Vui lòng thử lại sau."
+      } else if (error.message) {
+        errorMessage = error.message
       }
+
+      toast({
+        variant: "destructive",
+        title: "Lỗi đăng nhập",
+        description: errorMessage,
+      })
+      
+      // Throw error with better message for UI
+      throw new Error(errorMessage)
     }
-    setIsLoading(false)
-    console.error("❌ Login failed - no valid response")
-    return false
   }
 
-  const logout = () => {
-    // Attempt to call server logout - ignore errors
-    try {
-      void api.logout()
-    } catch {}
+  const logout = async () => {
+    setIsLoading(true)
+    
+    // Always clear local state first
+    const wasLoggedIn = !!user
     setUser(null)
     localStorage.removeItem("tlu-hub-user")
     localStorage.removeItem("tlu-hub-token")
+    
+    // Try to notify backend, but don't fail if it errors
+    try {
+      if (user?.studentId) {
+        await api.logout(user.studentId)
+      }
+    } catch (error) {
+      console.warn("Logout API call failed, but user is logged out locally:", error)
+      // Don't throw - logout should always succeed on client side
+    }
+    
+    // Show toast notification
+    if (wasLoggedIn) {
+      toast({
+        variant: "default",
+        title: "Đã đăng xuất",
+        description: "Bạn đã đăng xuất khỏi TLU Hub",
+      })
+    }
+    
+    setIsLoading(false)
   }
 
   return <AuthContext.Provider value={{ user, login, logout, isLoading }}>{children}</AuthContext.Provider>

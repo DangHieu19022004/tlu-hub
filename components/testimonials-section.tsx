@@ -1,6 +1,7 @@
 import { Star } from "lucide-react"
 import Image from "next/image"
 
+// TODO: Static testimonials - can be replaced with API data later
 const testimonials = [
   {
     id: 1,

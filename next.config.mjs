@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -8,6 +10,12 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60,
+  },
+  // Optimize performance
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@/components/ui'],
   },
   // Add proxy to bypass CORS when backend doesn't allow localhost:3000
   async rewrites() {

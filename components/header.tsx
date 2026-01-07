@@ -5,14 +5,18 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Search, Menu, X } from "lucide-react"
 import { usePathname } from "next/navigation"
-import { useState, Suspense } from "react"
+import { useState, Suspense, memo, useCallback } from "react"
 import { cn } from "@/lib/utils"
 import { AuthButtons } from "@/components/auth-buttons"
 import { AuthButtonsSkeleton } from "@/components/auth-buttons-skeleton"
 
-export function Header() {
+function HeaderComponent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+  
+  const toggleMobileMenu = useCallback(() => {
+    setMobileMenuOpen(prev => !prev)
+  }, [])
 
   const isActive = (path: string) => {
     if (path === "/") return pathname === "/"
@@ -20,7 +24,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-red-50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-red-50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-sm will-change-transform">
       <div className="container mx-auto px-4 max-w-[1200px]">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
@@ -29,9 +33,10 @@ export function Header() {
                 src="/logo.png" 
                 alt="TLU Hub Logo" 
                 width={90} 
-                height={28} 
-                className="object-contain"
+                height={28}
+                className="object-contain transition-transform duration-200 hover:scale-105"
                 priority
+                quality={90}
               />
             </div>
           </Link>
@@ -41,7 +46,7 @@ export function Header() {
             <Link
               href="/"
               className={cn(
-                "text-sm font-bold transition-colors",
+                "text-sm font-bold transition-all duration-200 ease-in-out hover:scale-105",
                 isActive("/") && pathname === "/"
                   ? "text-primary"
                   : "text-foreground hover:text-primary",
@@ -52,7 +57,7 @@ export function Header() {
             <Link
               href="/resources"
               className={cn(
-                "text-sm font-medium transition-colors",
+                "text-sm font-medium transition-all duration-200 ease-in-out hover:scale-105",
                 isActive("/resources")
                   ? "text-primary"
                   : "text-foreground hover:text-primary",
@@ -63,7 +68,7 @@ export function Header() {
             <Link
               href="/courses"
               className={cn(
-                "text-sm font-medium transition-colors",
+                "text-sm font-medium transition-all duration-200 ease-in-out hover:scale-105",
                 isActive("/courses")
                   ? "text-primary"
                   : "text-foreground hover:text-primary",
@@ -74,7 +79,7 @@ export function Header() {
             <Link
               href="/contact"
               className={cn(
-                "text-sm font-medium transition-colors",
+                "text-sm font-medium transition-all duration-200 ease-in-out hover:scale-105",
                 isActive("/contact")
                   ? "text-primary"
                   : "text-foreground hover:text-primary",
@@ -132,7 +137,7 @@ export function Header() {
                   isActive("/courses") ? "text-primary font-semibold" : "text-foreground",
                 )}
               >
-                Khóa Học
+                Quản Lý Tài Liệu
               </Link>
               <Link
                 href="/blog"
@@ -162,3 +167,5 @@ export function Header() {
     </header>
   )
 }
+
+export const Header = memo(HeaderComponent)

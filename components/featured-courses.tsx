@@ -4,49 +4,9 @@ import { Star, Clock, Users } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
-const courses = [
-  {
-    id: 1,
-    title: "Lập Trình Web Từ Cơ Bản Đến Nâng Cao",
-    instructor: "Nguyễn Văn A",
-    price: 499000,
-    originalPrice: 999000,
-    rating: 4.8,
-    students: 1234,
-    duration: "12 giờ",
-    image: "/web-development-coding.png",
-    badge: "Bán Chạy",
-    category: "Lập Trình",
-  },
-  {
-    id: 2,
-    title: "React & Next.js - Xây Dựng Ứng Dụng Hiện Đại",
-    instructor: "Trần Thị B",
-    price: 599000,
-    originalPrice: 1199000,
-    rating: 4.9,
-    students: 856,
-    duration: "15 giờ",
-    image: "/react-nextjs-development.png",
-    badge: "Mới",
-    category: "Lập Trình",
-  },
-  {
-    id: 3,
-    title: "UI/UX Design với Figma",
-    instructor: "Lê Văn C",
-    price: 399000,
-    originalPrice: 799000,
-    rating: 4.7,
-    students: 642,
-    duration: "10 giờ",
-    image: "/ui-ux-design-figma.jpg",
-    badge: "Phổ Biến",
-    category: "Thiết Kế",
-  },
-]
-
+// TODO: API integration for courses - currently showing empty state
 export function FeaturedCourses() {
+  const courses: any[] = []
   return (
     <section className="bg-background py-16 lg:py-24">
       <div className="container mx-auto max-w-7xl px-4">
@@ -60,6 +20,11 @@ export function FeaturedCourses() {
           </Button>
         </div>
 
+        {courses.length === 0 ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-gray-500">Chưa có khóa học nào. Đang cập nhật...</p>
+          </div>
+        ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {courses.map((course) => (
             <Link
@@ -105,6 +70,7 @@ export function FeaturedCourses() {
             </Link>
           ))}
         </div>
+        )}
 
         <div className="mt-8 flex justify-center sm:hidden">
           <Button variant="outline" asChild>

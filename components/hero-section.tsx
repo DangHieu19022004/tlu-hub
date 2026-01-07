@@ -1,10 +1,31 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { Search } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { useState, useCallback } from "react"
 
+//img decor homepage
 export function HeroSection() {
+  const router = useRouter()
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const handleSearch = useCallback(() => {
+    if (searchQuery.trim()) {
+      router.push(`/resources?search=${encodeURIComponent(searchQuery.trim())}`)
+    } else {
+      router.push("/resources")
+    }
+  }, [searchQuery, router])
+
+  const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch()
+    }
+  }, [handleSearch])
   return (
     <section className="w-full flex justify-center py-5 px-4 sm:px-10">
       <div className="w-full max-w-[1200px] flex flex-col">
@@ -47,9 +68,15 @@ export function HeroSection() {
                     <Input
                       className="flex w-full min-w-0 flex-1 resize-none outline-none text-foreground bg-white h-full placeholder:text-gray-400 px-2 text-base font-medium border-0"
                       placeholder="Tìm kiếm mã môn, tên môn học (VD: CSE482)..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyPress={handleKeyPress}
                     />
                     <div className="flex items-center justify-center bg-white pr-2 pl-2">
-                      <Button className="flex min-w-[120px] cursor-pointer items-center justify-center rounded-full h-11 px-6 bg-primary hover:bg-accent text-white text-base font-bold transition-all shadow-md">
+                      <Button 
+                        className="flex min-w-[120px] cursor-pointer items-center justify-center rounded-full h-11 px-6 bg-primary hover:bg-accent text-white text-base font-bold transition-all shadow-md"
+                        onClick={handleSearch}
+                      >
                         <span>Tìm kiếm</span>
                       </Button>
                     </div>
@@ -58,24 +85,24 @@ export function HeroSection() {
                 
                 <div className="mt-4 text-white/90 text-sm flex flex-wrap gap-2 justify-center items-center">
                   <span className="font-bold">Gợi ý:</span>
-                  <Link
+                  <button
                     className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition-colors border border-white/20 backdrop-blur-sm"
-                    href="#"
+                    onClick={() => router.push("/resources?search=Giải tích 1")}
                   >
                     Giải tích 1
-                  </Link>
-                  <Link
+                  </button>
+                  <button
                     className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition-colors border border-white/20 backdrop-blur-sm"
-                    href="#"
+                    onClick={() => router.push("/resources?search=Vật lý đại cương")}
                   >
                     Vật lý đại cương
-                  </Link>
-                  <Link
+                  </button>
+                  <button
                     className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition-colors border border-white/20 backdrop-blur-sm"
-                    href="#"
+                    onClick={() => router.push("/resources?search=Triết học Mác - Lênin")}
                   >
                     Triết học Mác - Lênin
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
