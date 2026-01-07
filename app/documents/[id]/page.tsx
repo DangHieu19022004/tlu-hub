@@ -34,6 +34,7 @@ import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api"
 import type { Document, DocumentType, AccessLevel } from "@/lib/types"
+import { useAuth } from "@/lib/auth-context"
 
 // Helper functions
 const getDocumentTypeLabel = (type: DocumentType): { label: string; color: string } => {
@@ -107,12 +108,15 @@ const formatPrice = (price?: number): string => {
 export default function DocumentDetailPage() {
   const params = useParams()
   const documentId = params.id as string
+  const { user } = useAuth()
   
   const [document, setDocument] = useState<Document | null>(null)
   const [reviews, setReviews] = useState<any[]>([])
   const [relatedDocuments, setRelatedDocuments] = useState<Document[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isPurchased, setIsPurchased] = useState(false)
+  const [userBalance, setUserBalance] = useState(0)
 
   useEffect(() => {
     async function loadDocument() {
@@ -138,6 +142,31 @@ export default function DocumentDetailPage() {
         
         // TODO: Fetch reviews from API when available
         setReviews([])
+        
+        // Check if user has purchased this document and load balance
+        if (user) {
+          try {
+            const studentId = user.studentId ?? user.email
+            
+            // Load balance
+            try {
+              const studentInfo = await api.getStudentInfo(studentId)
+              setUserBalance(studentInfo.balance || 0)
+            } catch (balanceErr) {
+              console.error("Failed to load balance:", balanceErr)
+              setUserBalance(0)
+            }
+            
+            // Check purchase status
+            const purchasedDocs = await api.getStudentDocuments(studentId)
+            const documents = Array.isArray(purchasedDocs) ? purchasedDocs : (purchasedDocs.data || [])
+            const hasPurchased = documents.some((doc: any) => (doc.documentID || doc.id) === documentId)
+            setIsPurchased(hasPurchased)
+          } catch (err) {
+            console.error("Failed to check purchase status:", err)
+            setIsPurchased(false)
+          }
+        }
       } catch (err: any) {
         console.error("Failed to load document:", err)
         setError(err?.message || "Không thể tải tài liệu")
@@ -147,7 +176,7 @@ export default function DocumentDetailPage() {
       }
     }
     void loadDocument()
-  }, [documentId])
+  }, [documentId, user])
 
   if (loading) {
     return (
@@ -534,7 +563,12 @@ export default function DocumentDetailPage() {
                 </div>
                 
                 <CardContent className="p-6 space-y-3">
-                  <DocumentActions documentId={document.documentID} price={document.price} />
+                  <DocumentActions 
+                    documentId={document.documentID} 
+                    price={document.price}
+                    isPurchased={isPurchased}
+                    currentBalance={userBalance}
+                  />
 
                   <Button
                     variant="outline"
