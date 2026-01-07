@@ -98,6 +98,32 @@ export interface Student {
   registrationDate: string
 }
 
+export interface StudentInfo {
+  /** Student ID */
+  studentID: string
+  /** Student name */
+  name: string
+  /** Email address */
+  email: string
+  /** Account balance */
+  balance: number
+  /** Is VIP status */
+  isVIP: boolean
+  /** VIP end date */
+  vipEndDate?: string
+  /** Last updated date */
+  updatedAt: string
+}
+
+export interface BalanceResponse {
+  /** Student ID */
+  studentID: string
+  /** Account balance */
+  balance: number
+  /** Formatted balance string */
+  formattedBalance: string
+}
+
 export interface Transaction {
   /** Transaction ID (UUID) */
   transactionID: string

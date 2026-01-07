@@ -13,6 +13,8 @@ import type {
   CreateTransactionRequestDto,
   ApiResponse,
   ApiException,
+  StudentInfo,
+  BalanceResponse,
 } from "./types"
 
 type FetchOptions = RequestInit & { query?: Record<string, string | number | boolean> }
@@ -380,6 +382,26 @@ export const api = {
         method: "POST",
       }
     )
+  },
+
+  /**
+   * Get student info
+   * GET /api/Student/info/{studentId}
+   */
+  getStudentInfo: async (studentId: string): Promise<StudentInfo> => {
+    return apiFetch<StudentInfo>(`/api/Student/info/${encodeURIComponent(studentId)}`, {
+      method: "GET",
+    })
+  },
+
+  /**
+   * Get student balance
+   * GET /api/Student/{studentId}/balance
+   */
+  getStudentBalance: async (studentId: string): Promise<BalanceResponse> => {
+    return apiFetch<BalanceResponse>(`/api/Student/${encodeURIComponent(studentId)}/balance`, {
+      method: "GET",
+    })
   },
 
   // ========== TRANSACTION ENDPOINTS ==========
