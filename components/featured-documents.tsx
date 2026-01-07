@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Download, ArrowRight, FileText, Code, BarChart3, Building2 } from "lucide-react"
+import { Eye, ArrowRight, FileText, Code, BarChart3, Building, Eye2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api"
 import type { Document } from "@/lib/types"
@@ -116,7 +116,7 @@ export function FeaturedDocuments() {
                         </span>
                       </div>
                       <div className="flex items-center gap-1 text-gray-500 text-xs font-medium bg-gray-50 px-2 py-1 rounded-md">
-                        <Download className="w-4 h-4" />
+                        <Eye className="w-4 h-4" />
                         <span>{doc.viewsCount || 0}</span>
                       </div>
                     </div>
