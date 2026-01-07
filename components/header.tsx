@@ -32,8 +32,8 @@ function HeaderComponent() {
               <Image 
                 src="/logo.png" 
                 alt="TLU Hub Logo" 
-                width={120} 
-                height={48} 
+                width={90} 
+                height={28}
                 className="object-contain transition-transform duration-200 hover:scale-105"
                 priority
                 quality={90}
