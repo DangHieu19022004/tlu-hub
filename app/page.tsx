@@ -50,22 +50,22 @@ export default function HomePage() {
     {
       title: "Kho đề ôn thi thực chiến",
       description: "Tổng hợp đề ôn tập. Có đáp án chi tiết tự tin điểm A",
-      color: "from-pink-500 to-rose-500"
+      color: "from-pink-500 via-pink-400 to-blue-500"
     },
     {
       title: "Giáo trình chuẩn và mới",
       description: "Không cần mang sách nặng. Truy cập giáo trình file mềm và tài liệu tham khảo mọi lúc mọi nơi.",
-      color: "from-purple-500 to-indigo-500"
+      color: "from-blue-500 via-blue-400 to-pink-500"
     },
     {
       title: "Bí kíp giải bài tập",
       description: "Ngân hàng câu hỏi ôn tập, bài giải mẫu giúp bạn gỡ rối những bài toán hóc búa nhất.",
-      color: "from-blue-500 to-cyan-500"
+      color: "from-pink-500 via-pink-300 to-blue-500"
     },
     {
       title: "Note tay & Slide bài giảng",
       description: "Slide bài giảng gốc từ thầy cô và vở ghi chép 'xịn sò' từ các tiền bối đi trước.",
-      color: "from-teal-500 to-emerald-500"
+      color: "from-blue-500 via-blue-300 to-pink-500"
     }
   ]
 
@@ -167,10 +167,10 @@ export default function HomePage() {
 
                     <div className="grid grid-cols-4 gap-4 md:gap-8 max-w-2xl mx-auto my-4">
                       {[
-                        { label: 'Ngày', value: timeLeft.days, color: 'from-pink-500 to-rose-500' },
-                        { label: 'Giờ', value: timeLeft.hours, color: 'from-purple-500 to-indigo-500' },
-                        { label: 'Phút', value: timeLeft.minutes, color: 'from-blue-500 to-cyan-500' },
-                        { label: 'Giây', value: timeLeft.seconds, color: 'from-teal-500 to-emerald-500' }
+                        { label: 'Ngày', value: timeLeft.days, color: 'from-pink-500 to-blue-500' },
+                        { label: 'Giờ', value: timeLeft.hours, color: 'from-blue-500 to-pink-500' },
+                        { label: 'Phút', value: timeLeft.minutes, color: 'from-pink-500 to-blue-500' },
+                        { label: 'Giây', value: timeLeft.seconds, color: 'from-blue-500 to-pink-500' }
                       ].map((item) => (
                         <div key={item.label} className="flex flex-col items-center gap-2">
                           <div className={`relative w-full aspect-square max-w-[110px] md:max-w-[130px] flex items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} backdrop-blur-md shadow-xl border-2 border-white`}>
@@ -225,7 +225,7 @@ export default function HomePage() {
                 className="lg:col-span-5 relative z-30"
               >
                 <div className="relative group max-w-sm mx-auto">
-                  <div className="absolute -inset-8 bg-gradient-to-br from-pink-400 via-red-400 to-orange-400 rounded-full blur-3xl opacity-40 group-hover:opacity-60 transition-opacity" />
+                  <div className="absolute -inset-8 bg-gradient-to-br from-pink-400 via-blue-300 to-blue-500 rounded-full blur-3xl opacity-40 group-hover:opacity-60 transition-opacity" />
                   <motion.div
                     animate={{ 
                       y: [0, -15, 0],
@@ -291,10 +291,10 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-pink-200 via-red-200 to-orange-200 rounded-full blur-3xl opacity-20 -z-10" />
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-pink-300 via-white/50 to-blue-400 rounded-full blur-3xl opacity-20 -z-10" />
         </section>
 
-        <section className="w-full flex justify-center py-24 px-4 md:px-8 bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 relative overflow-hidden">
+        <section className="w-full flex justify-center py-24 px-4 md:px-8 bg-gradient-to-br from-blue-50 via-white to-pink-100 relative overflow-hidden">
           <div className="w-full max-w-[1400px] relative">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
@@ -322,9 +322,9 @@ export default function HomePage() {
                   viewport={{ once: true }}
                   className="group relative"
                 >
-                  <div className="absolute -inset-1 bg-gradient-to-br from-purple-400 to-pink-400 rounded-2xl blur-lg opacity-40 group-hover:opacity-60 transition-opacity" />
+                  <div className="absolute -inset-1 bg-gradient-to-br from-pink-400 via-blue-300 to-blue-500 rounded-2xl blur-lg opacity-40 group-hover:opacity-60 transition-opacity" />
                   <div className="relative bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all h-full">
-                    <div className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-black text-lg shadow-lg group-hover:scale-110 transition-transform">
+                    <div className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-blue-500 flex items-center justify-center text-white font-black text-lg shadow-lg group-hover:scale-110 transition-transform">
                       {index + 1}
                     </div>
                     <div className="pt-4">
@@ -335,7 +335,7 @@ export default function HomePage() {
                         {item.description}
                       </p>
                     </div>
-                    <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-purple-100 to-transparent rounded-tl-full opacity-50" />
+                    <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-blue-100 to-transparent rounded-tl-full opacity-50" />
                   </div>
                 </motion.div>
               ))}
@@ -352,7 +352,7 @@ export default function HomePage() {
             </motion.div>
           </div>
 
-          <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-purple-300 to-pink-300 rounded-full blur-3xl opacity-20 -z-10" />
+          <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-300 via-white/40 to-pink-300 rounded-full blur-3xl opacity-20 -z-10" />
         </section>
 
         <section className="w-full flex justify-center py-24 px-4 md:px-8 relative overflow-hidden bg-white">
@@ -382,10 +382,10 @@ export default function HomePage() {
                       viewport={{ once: true }}
                       className="group relative"
                     >
-                      <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition-opacity" />
-                      <div className="relative bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 border-2 border-white shadow-xl group-hover:shadow-2xl transition-all">
+                      <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 via-white/30 to-pink-500 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition-opacity" />
+                      <div className="relative bg-gradient-to-br from-blue-50 via-white to-pink-50 rounded-2xl p-6 border-2 border-white shadow-xl group-hover:shadow-2xl transition-all">
                         <div className="flex items-start gap-5">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 via-purple-600 to-pink-600 flex items-center justify-center text-white font-black text-lg shrink-0 shadow-md group-hover:scale-105 transition-transform">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 via-blue-400 to-pink-500 flex items-center justify-center text-white font-black text-lg shrink-0 shadow-md group-hover:scale-105 transition-transform">
                             {index + 1}
                           </div>
                           <div className="flex-1">
@@ -397,7 +397,7 @@ export default function HomePage() {
                             </p>
                           </div>
                         </div>
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-purple-200/30 to-transparent rounded-br-2xl" />
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-200/30 to-transparent rounded-br-2xl" />
                       </div>
                     </motion.div>
                   ))}
@@ -412,7 +412,7 @@ export default function HomePage() {
                 className="lg:col-span-5 relative z-30 hidden lg:block"
               >
                 <div className="relative max-w-md mx-auto">
-                  <div className="absolute -inset-10 bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 rounded-full blur-3xl opacity-40" />
+                  <div className="absolute -inset-10 bg-gradient-to-br from-blue-400 via-pink-300 to-pink-500 rounded-full blur-3xl opacity-40" />
                   <motion.div
                     animate={{ 
                       y: [0, -20, 0],
@@ -438,8 +438,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="absolute top-1/4 left-0 w-[600px] h-[600px] bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-3xl opacity-20 -z-10" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-to-tl from-pink-200 to-purple-200 rounded-full blur-3xl opacity-20 -z-10" />
+          <div className="absolute top-1/4 left-0 w-[600px] h-[600px] bg-gradient-to-br from-blue-300 via-white/30 to-blue-500 rounded-full blur-3xl opacity-20 -z-10" />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-to-tl from-pink-300 via-white/30 to-pink-500 rounded-full blur-3xl opacity-20 -z-10" />
         </section>
 
         <section className="w-full flex justify-center py-12 px-4">
@@ -453,7 +453,7 @@ export default function HomePage() {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center"
+              className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-pink-500 via-blue-400 to-blue-600 rounded-full flex items-center justify-center"
             >
               <Sparkles className="h-10 w-10 text-white" />
             </motion.div>
