@@ -23,7 +23,7 @@ type FetchOptions = RequestInit & { query?: Record<string, string | number | boo
 // CONFIGURATION
 // ============================================================================
 
-const DEFAULT_API_BASE = "http://localhost:5178"
+const DEFAULT_API_BASE = "https://tailieutlu-backend.onrender.com"
 const DEFAULT_TIMEOUT = 30000 // 30 seconds
 
 function getEnvIsDev() {
