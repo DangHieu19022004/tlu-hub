@@ -1,8 +1,18 @@
+'use client'
+
 import Link from "next/link"
 import Image from "next/image"
 import { Mail, Globe } from "lucide-react"
+import { toast } from "@/hooks/use-toast"
 
 export function Footer() {
+  const handleComingSoon = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    toast({
+      title: "Coming Soon",
+      description: "Tính năng này đang được phát triển!",
+    })
+  }
   return (
     <footer className="bg-white border-t border-red-50 py-12">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-10 flex flex-col md:flex-row justify-between gap-10">
@@ -37,31 +47,7 @@ export function Footer() {
           </div>
         </div>
         
-        <div className="flex flex-wrap gap-16">
-          <div className="flex flex-col gap-4">
-            <h4 className="font-bold text-foreground text-lg">
-              Khám phá
-            </h4>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/resources"
-            >
-              Tài liệu mới
-            </Link>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/courses"
-            >
-              Môn học phổ biến
-            </Link>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/resources"
-            >
-              Bảng xếp hạng
-            </Link>
-          </div>
-          
+        <div className="flex flex-wrap gap-8">           
           <div className="flex flex-col gap-4">
             <h4 className="font-bold text-foreground text-lg">
               Hỗ trợ
@@ -69,18 +55,21 @@ export function Footer() {
             <Link
               className="text-sm text-gray-600 hover:text-primary font-medium"
               href="/resources"
+              onClick={handleComingSoon}
             >
               Hướng dẫn đăng tải
             </Link>
             <Link
               className="text-sm text-gray-600 hover:text-primary font-medium"
               href="/blog"
+              onClick={handleComingSoon}
             >
               Quy định cộng đồng
             </Link>
             <Link
               className="text-sm text-gray-600 hover:text-primary font-medium"
               href="/contact"
+              onClick={handleComingSoon}
             >
               Liên hệ
             </Link>
