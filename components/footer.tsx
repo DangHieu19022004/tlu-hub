@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Mail, Globe } from "lucide-react"
+import { Facebook, Users, MessageCircle } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
 
 export function Footer() {
@@ -34,15 +34,27 @@ export function Footer() {
           <div className="flex gap-3 mt-2">
             <Link
               className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-blue-600 transition-all"
-              href="#"
+              href="https://www.facebook.com/tluhub/"
+              target="_blank"
+              title="Fanpage Facebook"
             >
-              <Globe className="w-5 h-5" />
+              <Facebook className="w-5 h-5" />
             </Link>
             <Link
-              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-primary transition-all"
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-blue-600 transition-all"
               href="#"
+              target="_blank"
+              title="Group Facebook"
             >
-              <Mail className="w-5 h-5" />
+              <Users className="w-5 h-5" />
+            </Link>
+            <Link
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-blue-500 transition-all"
+              href="#"
+              target="_blank"
+              title="Zalo"
+            >
+              <MessageCircle className="w-5 h-5" />
             </Link>
           </div>
         </div>
