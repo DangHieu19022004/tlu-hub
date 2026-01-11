@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { BookOpen, FileText, Users, Sparkles, Clock } from 'lucide-react'
+import { BookOpen, FileText, Users, Sparkles, Clock, Rocket, GraduationCap, BookMarked, Lightbulb, Presentation, Calendar, Timer, Zap } from 'lucide-react'
 import Image from "next/image"
 
 export default function HomePage() {
@@ -50,22 +50,22 @@ export default function HomePage() {
     {
       title: "Kho đề ôn thi thực chiến",
       description: "Tổng hợp đề ôn tập. Có đáp án chi tiết tự tin điểm A",
-      color: "from-pink-500 via-pink-400 to-blue-500"
+      icon: GraduationCap
     },
     {
       title: "Giáo trình chuẩn và mới",
       description: "Không cần mang sách nặng. Truy cập giáo trình file mềm và tài liệu tham khảo mọi lúc mọi nơi.",
-      color: "from-blue-500 via-blue-400 to-pink-500"
+      icon: BookMarked
     },
     {
       title: "Bí kíp giải bài tập",
       description: "Ngân hàng câu hỏi ôn tập, bài giải mẫu giúp bạn gỡ rối những bài toán hóc búa nhất.",
-      color: "from-pink-500 via-pink-300 to-blue-500"
+      icon: Lightbulb
     },
     {
       title: "Note tay & Slide bài giảng",
       description: "Slide bài giảng gốc từ thầy cô và vở ghi chép 'xịn sò' từ các tiền bối đi trước.",
-      color: "from-blue-500 via-blue-300 to-pink-500"
+      icon: Presentation
     }
   ]
 
@@ -102,8 +102,8 @@ export default function HomePage() {
       answer: "Tất cả sinh viên Đại học Thủy Lợi đều có thể truy cập và sử dụng nền tảng."
     },
     {
-      question: "Tài liệu có được kiểm duyệt không?",
-      answer: "Có! Mọi tài liệu đều được kiểm tra chất lượng và phân loại đúng môn học trước khi xuất bản."
+      question: "Tài liệu có chất lượng không?",
+      answer: "Có! Mọi tài liệu đều được kiểm tra chất lượng kĩ lưỡng bởi đội ngũ quản trị uy tín"
     }
   ]
 
@@ -167,15 +167,14 @@ export default function HomePage() {
 
                     <div className="grid grid-cols-4 gap-4 md:gap-8 max-w-2xl mx-auto my-4">
                       {[
-                        { label: 'Ngày', value: timeLeft.days, color: 'from-pink-500 to-blue-500' },
-                        { label: 'Giờ', value: timeLeft.hours, color: 'from-blue-500 to-pink-500' },
-                        { label: 'Phút', value: timeLeft.minutes, color: 'from-pink-500 to-blue-500' },
-                        { label: 'Giây', value: timeLeft.seconds, color: 'from-blue-500 to-pink-500' }
+                        { label: 'Ngày', value: timeLeft.days },
+                        { label: 'Giờ', value: timeLeft.hours },
+                        { label: 'Phút', value: timeLeft.minutes },
+                        { label: 'Giây', value: timeLeft.seconds }
                       ].map((item) => (
                         <div key={item.label} className="flex flex-col items-center gap-2">
-                          <div className={`relative w-full aspect-square max-w-[110px] md:max-w-[130px] flex items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} backdrop-blur-md shadow-xl border-2 border-white`}>
-                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/30 to-transparent" />
-                            <span className="relative text-3xl md:text-4xl lg:text-5xl font-black text-white drop-shadow-lg">
+                          <div className="relative w-full aspect-square max-w-[110px] md:max-w-[130px] flex items-center justify-center rounded-2xl bg-white shadow-lg shadow-accent/20 border-2 border-accent/30">
+                            <span className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tabular-nums">
                               {String(item.value).padStart(2, '0')}
                             </span>
                           </div>
@@ -214,7 +213,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="w-full flex justify-center py-24 px-4 md:px-8 overflow-visible relative">
+        <section className="w-full flex justify-center py-24 px-4 md:px-8 overflow-visible relative bg-gradient-to-br from-pink-100 to-pink-50">
           <div className="w-full max-w-[1400px] relative">
             <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               <motion.div
@@ -225,7 +224,7 @@ export default function HomePage() {
                 className="lg:col-span-5 relative z-30"
               >
                 <div className="relative group max-w-sm mx-auto">
-                  <div className="absolute -inset-8 bg-gradient-to-br from-pink-400 via-blue-300 to-blue-500 rounded-full blur-3xl opacity-40 group-hover:opacity-60 transition-opacity" />
+                  <div className="absolute -inset-8 bg-gradient-to-br from-pink-300 via-pink-400 to-pink-500 rounded-full blur-3xl opacity-40 group-hover:opacity-60 transition-opacity" />
                   <motion.div
                     animate={{ 
                       y: [0, -15, 0],
@@ -257,44 +256,46 @@ export default function HomePage() {
                   viewport={{ once: true }}
                 >
                   <h2 className="text-3xl md:text-5xl font-black leading-tight mb-6">
-                    <span className="text-gray-800">Vũ khí săn học bổng</span>                    
+                    <span className="text-gray-800">Vũ khí săn <span className="text-primary">học bổng</span></span>                    
                   </h2>
                 </motion.div>
 
                 <div className="grid gap-4">
-                  {documentTypes.map((item, index) => (
-                    <motion.div
-                      key={item.title}
-                      initial={{ opacity: 0, x: 50 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      className="group relative"
-                      style={{ marginLeft: index % 2 === 0 ? '0' : '1rem' }}
-                    >
-                      <div className={`absolute -inset-1 bg-gradient-to-br ${item.color} rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity`} />
-                      <div className={`relative bg-gradient-to-br ${item.color} rounded-2xl p-5 md:p-6 shadow-xl overflow-hidden`}>
-                        <div className="absolute -top-8 -right-8 w-24 h-24 bg-white/20 rounded-full" />
-                        <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-black/10 rounded-full" />
-                        <h3 className="text-xl md:text-2xl font-black text-white mb-2 relative z-10">
-                          {item.title}
-                        </h3>
-                        <p className="text-white/95 text-base md:text-lg relative z-10">
-                          {item.description}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
+                  {documentTypes.map((item, index) => {
+                    const Icon = item.icon
+                    return (
+                      <motion.div
+                        key={item.title}
+                        initial={{ opacity: 0, x: 50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        viewport={{ once: true }}
+                        className="flex flex-col gap-4 rounded-3xl border border-accent/20 bg-white p-6 shadow-xl shadow-accent/10"
+                      >
+                        <div className="text-accent size-12 flex items-center justify-center bg-accent/10 rounded-2xl mb-1">
+                          <Icon className="w-8 h-8" />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <h3 className="text-foreground text-xl font-bold">
+                            {item.title}
+                          </h3>
+                          <p className="text-gray-500 text-sm leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )
+                  })}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-pink-300 via-white/50 to-blue-400 rounded-full blur-3xl opacity-20 -z-10" />
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-pink-200 via-pink-300 to-pink-400 rounded-full blur-3xl opacity-20 -z-10" />
         </section>
 
-        <section className="w-full flex justify-center py-24 px-4 md:px-8 bg-gradient-to-br from-blue-50 via-white to-pink-100 relative overflow-hidden">
+        <section className="w-full flex justify-center py-24 px-4 md:px-8 bg-gradient-to-b from-white to-[#fff0f3] relative overflow-hidden">
           <div className="w-full max-w-[1400px] relative">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
@@ -355,9 +356,9 @@ export default function HomePage() {
           <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-300 via-white/40 to-pink-300 rounded-full blur-3xl opacity-20 -z-10" />
         </section>
 
-        <section className="w-full flex justify-center py-24 px-4 md:px-8 relative overflow-hidden bg-white">
+        <section className="w-full flex justify-center py-24 px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-pink-100 to-pink-50">
           <div className="w-full max-w-[1400px] relative">
-            <div className="grid lg:grid-cols-12 gap-12 items-start">
+            <div className="grid lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-7 relative z-20">
                 <motion.div
                   initial={{ opacity: 0, y: 50 }}
@@ -448,21 +449,29 @@ export default function HomePage() {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="w-full max-w-[1200px] bg-gradient-to-r from-red-50 to-pink-50 rounded-3xl p-12 text-center border-2 border-white shadow-xl"
+            className="w-full max-w-[800px] flex flex-col items-center text-center gap-8 p-8 border-2 border-dashed border-secondary/30 rounded-3xl bg-white"
           >
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-pink-500 via-blue-400 to-blue-600 rounded-full flex items-center justify-center"
+              animate={{ rotate: [0, 3, -3, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="size-16 bg-gradient-to-tr from-primary to-secondary rounded-2xl flex items-center justify-center shadow-lg"
             >
-              <Sparkles className="h-10 w-10 text-white" />
+              <Rocket className="text-white w-10 h-10" />
             </motion.div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              Hãy cùng chờ đón nhé!
+            <h2 className="text-4xl font-black text-foreground leading-tight">
+              Bạn đã sẵn sàng <br />
+              <span className="text-primary">bứt phá điểm số?</span>
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Chúng tôi đang hoàn thiện những tính năng tuyệt vời để mang đến trải nghiệm tốt nhất cho bạn
+            <p className="text-gray-600 max-w-lg text-lg">
+              Tham gia cộng đồng TLU Hub ngay hôm nay để không bỏ lỡ những tài liệu ôn thi cực chất.
             </p>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-accent text-white h-14 px-10 rounded-full font-bold text-lg transition-all shadow-xl shadow-red-500/30"
+            >
+              Tham gia ngay
+            </motion.button>
           </motion.div>
         </section>
       </main>
