@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Eye, ArrowRight, FileText, Code, BarChart3, Building, Eye2 } from "lucide-react"
+import { Eye, ArrowRight, FileText, Code, BarChart3, Building2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api"
 import type { Document } from "@/lib/types"
