@@ -16,8 +16,10 @@ export function Toaster() {
   return (
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, ...props }) {
+        const variant = props.variant as string | undefined
+        const isComingSoon = variant === 'coming-soon'
         return (
-          <Toast key={id} {...props} className="border-l-4 border-blue-500 bg-white shadow-lg">
+          <Toast key={id} {...props} className={isComingSoon ? "border-l-4 border-l-pink-400 bg-gradient-to-r from-pink-50 to-white shadow-lg" : "border-l-4 border-blue-500 bg-white shadow-lg"}>
             <div className="grid gap-1">
               {title && <ToastTitle className="text-gray-800 font-semibold">{title}</ToastTitle>}
               {description && (

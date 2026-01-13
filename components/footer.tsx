@@ -3,16 +3,9 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Facebook, Users, MessageCircle } from "lucide-react"
-import { toast } from "@/hooks/use-toast"
+import { ComingSoonLink } from "@/components/coming-soon-link"
 
 export function Footer() {
-  const handleComingSoon = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault()
-    toast({
-      title: "Coming Soon",
-      description: "Tính năng này đang được phát triển!",
-    })
-  }
   return (
     <footer className="bg-white border-t border-red-50 py-12">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-10 flex flex-col md:flex-row justify-between gap-10">
@@ -33,7 +26,7 @@ export function Footer() {
           </p>
           <div className="flex gap-3 mt-2">
             <Link
-              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-blue-600 transition-all"
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-600 transition-all"
               href="https://www.facebook.com/tluhub/"
               target="_blank"
               title="Fanpage Facebook"
@@ -41,7 +34,7 @@ export function Footer() {
               <Facebook className="w-5 h-5" />
             </Link>
             <Link
-              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-blue-600 transition-all"
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-600 transition-all"
               href="#"
               target="_blank"
               title="Group Facebook"
@@ -49,7 +42,7 @@ export function Footer() {
               <Users className="w-5 h-5" />
             </Link>
             <Link
-              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-blue-500 transition-all"
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-500 transition-all"
               href="#"
               target="_blank"
               title="Zalo"
@@ -64,27 +57,15 @@ export function Footer() {
             <h4 className="font-bold text-foreground text-lg">
               Hỗ trợ
             </h4>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/resources"
-              onClick={handleComingSoon}
-            >
+            <ComingSoonLink>
               Hướng dẫn đăng tải
-            </Link>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/blog"
-              onClick={handleComingSoon}
-            >
+            </ComingSoonLink>
+            <ComingSoonLink>
               Quy định cộng đồng
-            </Link>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/contact"
-              onClick={handleComingSoon}
-            >
+            </ComingSoonLink>
+            <ComingSoonLink>
               Liên hệ
-            </Link>
+            </ComingSoonLink>
           </div>
         </div>
       </div>
