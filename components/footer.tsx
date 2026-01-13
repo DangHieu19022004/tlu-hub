@@ -2,7 +2,9 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Facebook, Users, MessageCircle } from "lucide-react"
+import { Facebook } from "lucide-react"
+import { FaUsers } from "react-icons/fa"
+import { SiZalo } from "react-icons/si"
 import { ComingSoonLink } from "@/components/coming-soon-link"
 import { toast } from "@/hooks/use-toast"
 
@@ -48,7 +50,7 @@ export function Footer() {
               onClick={handleComingSoon}
               title="Group Facebook"
             >
-              <Users className="w-5 h-5" />
+              <FaUsers className="w-5 h-5" />
             </Link>
             <Link
               className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-500 transition-all cursor-pointer"
@@ -56,7 +58,7 @@ export function Footer() {
               onClick={handleComingSoon}
               title="Zalo"
             >
-              <MessageCircle className="w-5 h-5" />
+              <SiZalo className="w-5 h-5" />
             </Link>
           </div>
         </div>
