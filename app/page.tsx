@@ -6,6 +6,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { BookOpen, FileText, Users, Sparkles, Clock, Rocket, GraduationCap, BookMarked, Lightbulb, Presentation, Calendar, Timer, Zap } from 'lucide-react'
 import Image from "next/image"
+import { toast } from "@/hooks/use-toast"
 
 export default function HomePage() {
   // Ngày đích: Mùng 1 Tết 2026 (17/02/2026)
@@ -18,7 +19,14 @@ export default function HomePage() {
     minutes: 0,
     seconds: 0
   })
-
+  const handleComingSoon = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault()
+      toast({
+        title: "Coming soon !!!",
+        description: "Tính năng này đang được phát triển",
+        variant: "coming-soon"
+      })
+    }
   useEffect(() => {
     // Hàm tính toán tách riêng để gọi ngay lập tức
     const calculateTimeLeft = () => {
@@ -469,6 +477,7 @@ export default function HomePage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-accent text-white h-14 px-10 rounded-full font-bold text-lg transition-all shadow-xl shadow-red-500/30"
+              onClick={handleComingSoon}
             >
               Tham gia ngay
             </motion.button>

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { X, Send, Bot, User, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
+import { toast } from "@/hooks/use-toast"
 
 interface Message {
   id: string
@@ -114,11 +115,11 @@ export function AIChatbot() {
   }
 
   const handleOpenChat = () => {
-    setIsOpen(true)
-    setShowTooltip(false)
-    if (tooltipTimerRef.current) {
-      clearTimeout(tooltipTimerRef.current)
-    }
+    toast({
+      title: "Coming soon !!!",
+      description: "Tính năng này đang được phát triển",
+      variant: "coming-soon"
+    })
   }
 
   return (
@@ -134,7 +135,7 @@ export function AIChatbot() {
           )}
           <Button
             size="lg"
-            className="h-16 w-16 md:h-20 md:w-20 rounded-full shadow-lg transition-all hover:scale-110 p-3 overflow-hidden bg-gradient-to-br from-primary to-accent"
+            className="h-16 w-16 md:h-20 md:w-20 rounded-full shadow-lg transition-all hover:scale-110 p-3 overflow-hidden bg-gradient-to-br from-primary to-accent cursor-pointer"
             onClick={handleOpenChat}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}

@@ -9,6 +9,7 @@ import { useState, Suspense } from "react"
 import { cn } from "@/lib/utils"
 import { AuthButtons } from "@/components/auth-buttons"
 import { AuthButtonsSkeleton } from "@/components/auth-buttons-skeleton"
+import { ComingSoonLink } from "@/components/coming-soon-link"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -49,39 +50,15 @@ export function Header() {
             >
               Trang chủ
             </Link>
-            <Link
-              href="/resources"
-              className={cn(
-                "text-sm font-medium transition-colors",
-                isActive("/resources")
-                  ? "text-primary"
-                  : "text-foreground hover:text-primary",
-              )}
-            >
+            <ComingSoonLink>
               Tài liệu
-            </Link>
-            <Link
-              href="/courses"
-              className={cn(
-                "text-sm font-medium transition-colors",
-                isActive("/courses")
-                  ? "text-primary"
-                  : "text-foreground hover:text-primary",
-              )}
-            >
+            </ComingSoonLink>
+            <ComingSoonLink>
               Đăng tải
-            </Link>
-            <Link
-              href="/contact"
-              className={cn(
-                "text-sm font-medium transition-colors",
-                isActive("/contact")
-                  ? "text-primary"
-                  : "text-foreground hover:text-primary",
-              )}
-            >
+            </ComingSoonLink>
+            <ComingSoonLink>
               Giới thiệu
-            </Link>
+            </ComingSoonLink>
           </nav>
 
           {/* Search & Auth */}
@@ -116,42 +93,18 @@ export function Header() {
               >
                 Trang Chủ
               </Link>
-              <Link
-                href="/resources"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  isActive("/resources") ? "text-primary font-semibold" : "text-foreground",
-                )}
-              >
+              <ComingSoonLink>
                 Tài Liệu
-              </Link>
-              <Link
-                href="/courses"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  isActive("/courses") ? "text-primary font-semibold" : "text-foreground",
-                )}
-              >
+              </ComingSoonLink>
+              <ComingSoonLink>
                 Khóa Học
-              </Link>
-              <Link
-                href="/blog"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  isActive("/blog") ? "text-primary font-semibold" : "text-foreground",
-                )}
-              >
+              </ComingSoonLink>
+              <ComingSoonLink>
                 Blog
-              </Link>
-              <Link
-                href="/contact"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  isActive("/contact") ? "text-primary font-semibold" : "text-foreground",
-                )}
-              >
+              </ComingSoonLink>
+              <ComingSoonLink>
                 Liên Hệ
-              </Link>
+              </ComingSoonLink>
               <div className="flex flex-col gap-2 pt-4">
                 <AuthButtons />
               </div>

@@ -4,8 +4,17 @@ import Link from "next/link"
 import Image from "next/image"
 import { Facebook, Users, MessageCircle } from "lucide-react"
 import { ComingSoonLink } from "@/components/coming-soon-link"
+import { toast } from "@/hooks/use-toast"
 
 export function Footer() {
+  const handleComingSoon = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    toast({
+      title: "Coming soon !!!",
+      description: "Tính năng này đang được phát triển",
+      variant: "coming-soon"
+    })
+  }
   return (
     <footer className="bg-white border-t border-red-50 py-12">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-10 flex flex-col md:flex-row justify-between gap-10">
@@ -34,17 +43,17 @@ export function Footer() {
               <Facebook className="w-5 h-5" />
             </Link>
             <Link
-              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-600 transition-all"
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-600 transition-all cursor-pointer"
               href="#"
-              target="_blank"
+              onClick={handleComingSoon}
               title="Group Facebook"
             >
               <Users className="w-5 h-5" />
             </Link>
             <Link
-              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-500 transition-all"
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-500 transition-all cursor-pointer"
               href="#"
-              target="_blank"
+              onClick={handleComingSoon}
               title="Zalo"
             >
               <MessageCircle className="w-5 h-5" />

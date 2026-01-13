@@ -4,8 +4,17 @@ import { motion } from 'framer-motion'
 import { Construction, ArrowLeft, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { useEffect } from 'react'
+import { toast } from '@/hooks/use-toast'
 
 export function UnderDevelopment() {
+  useEffect(() => {
+    toast({
+      title: "Coming soon !!!",
+      description: "Tính năng này đang được phát triển",
+      variant: "coming-soon"
+    })
+  }, [])
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-4 py-16">
       <motion.div
