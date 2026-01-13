@@ -173,7 +173,7 @@ export default function HomePage() {
                         { label: 'Giây', value: timeLeft.seconds }
                       ].map((item) => (
                         <div key={item.label} className="flex flex-col items-center gap-2">
-                          <div className="relative w-full aspect-square max-w-[110px] md:max-w-[130px] flex items-center justify-center rounded-2xl bg-white shadow-lg shadow-accent/20 border-2 border-accent/30">
+                          <div className="relative w-full aspect-square max-w-[110px] md:max-w-[130px] flex items-center justify-center rounded-2xl bg-white shadow-lg shadow-accent/20 border-2 border-accent/30 p-2">
                             <span className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tabular-nums">
                               {String(item.value).padStart(2, '0')}
                             </span>
