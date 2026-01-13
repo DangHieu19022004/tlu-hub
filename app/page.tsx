@@ -323,9 +323,9 @@ export default function HomePage() {
                   viewport={{ once: true }}
                   className="group relative"
                 >
-                  <div className="absolute -inset-1 bg-gradient-to-br from-pink-400 via-blue-300 to-blue-500 rounded-2xl blur-lg opacity-40 group-hover:opacity-60 transition-opacity" />
+                  <div className="absolute -inset-1 bg-gradient-to-br from-pink-400 via-blue-300 to-blue-400 rounded-2xl blur-lg opacity-40 group-hover:opacity-60 transition-opacity" />
                   <div className="relative bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all h-full">
-                    <div className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-blue-500 flex items-center justify-center text-white font-black text-lg shadow-lg group-hover:scale-110 transition-transform">
+                    <div className="absolute -top-4 -right-4 w-14 h-14 rounded-xl bg-gradient-to-br from-pink-400 to-pink-500 flex items-center justify-center text-white font-black text-xl shadow-xl group-hover:scale-110 group-hover:shadow-2xl transition-all">
                       {index + 1}
                     </div>
                     <div className="pt-4">
@@ -336,7 +336,7 @@ export default function HomePage() {
                         {item.description}
                       </p>
                     </div>
-                    <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-blue-100 to-transparent rounded-tl-full opacity-50" />
+                    <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-primary/5 to-transparent rounded-tl-full opacity-50" />
                   </div>
                 </motion.div>
               ))}
@@ -386,7 +386,7 @@ export default function HomePage() {
                       <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 via-white/30 to-pink-500 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition-opacity" />
                       <div className="relative bg-gradient-to-br from-blue-50 via-white to-pink-50 rounded-2xl p-6 border-2 border-white shadow-xl group-hover:shadow-2xl transition-all">
                         <div className="flex items-start gap-5">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 via-blue-400 to-pink-500 flex items-center justify-center text-white font-black text-lg shrink-0 shadow-md group-hover:scale-105 transition-transform">
+                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-400 to-pink-500 flex items-center justify-center text-white font-black text-xl shrink-0 shadow-xl group-hover:scale-110 group-hover:shadow-2xl transition-all">
                             {index + 1}
                           </div>
                           <div className="flex-1">
