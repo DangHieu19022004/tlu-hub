@@ -10,7 +10,7 @@ const testimonials = [
     content:
       "TLU HUB đã giúp tôi nâng cao kỹ năng lập trình rất nhiều. Các khóa học rất chất lượng và dễ hiểu. Tôi đã tìm được công việc mơ ước nhờ những kiến thức học được ở đây.",
     rating: 5,
-    avatar: "/male-student-studying.png",
+    avatar: "/avartar/male1.png",
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ const testimonials = [
     content:
       "Nền tảng tuyệt vời với nhiều tài liệu miễn phí. Giảng viên nhiệt tình và hỗ trợ tốt. Tôi đã học được rất nhiều kỹ năng thiết kế UI/UX từ các khóa học ở đây.",
     rating: 5,
-    avatar: "/diverse-female-student.png",
+    avatar: "/avartar/female1.png",
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ const testimonials = [
     content:
       "Các khóa học về marketing và kinh doanh rất thực tế và bổ ích. Tôi đã áp dụng được ngay vào công việc part-time của mình và thu được kết quả tốt.",
     rating: 5,
-    avatar: "/male-business-student.jpg",
+    avatar: "/avartar/male2.png",
   },
   {
     id: 4,
@@ -37,7 +37,7 @@ const testimonials = [
     content:
       "Giao diện thân thiện, dễ sử dụng. Cộng đồng học viên rất năng động và sẵn sàng giúp đỡ nhau. Tôi rất hài lòng với trải nghiệm học tập tại TLU HUB.",
     rating: 5,
-    avatar: "/female-language-student.jpg",
+    avatar: "/avartar/female2.png",
   },
 ]
 
