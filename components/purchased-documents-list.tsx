@@ -15,6 +15,7 @@ import {
 import { api } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { Spinner, ButtonSpinner } from "@/components/ui/spinner"
 
 interface PurchasedDocument {
   id: string
@@ -76,12 +77,7 @@ export function PurchasedDocumentsList({ documents, studentId, loading = false }
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="ml-3 text-muted-foreground">Đang tải tài liệu...</span>
-      </div>
-    )
+    return <Spinner size="lg" text="Đang tải tài liệu..." className="py-8" />
   }
 
   if (documents.length === 0) {
@@ -155,7 +151,7 @@ export function PurchasedDocumentsList({ documents, studentId, loading = false }
               >
                 {downloadingId === doc.id ? (
                   <>
-                    <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                    <ButtonSpinner className="mr-1" />
                     Đang mở...
                   </>
                 ) : (

@@ -11,6 +11,7 @@ import { Upload, Loader2 } from "lucide-react"
 import { api } from "@/lib/api"
 import { Document, DocumentType, AccessLevel } from "@/lib/types"
 import { useToast } from "@/hooks/use-toast"
+import { ButtonSpinner } from "@/components/ui/spinner"
 
 interface DocumentUploadFormProps {
   document?: Document
@@ -222,11 +223,12 @@ export function DocumentUploadForm({ document, onSuccess, onCancel }: DocumentUp
             />
           </div>
 
+
           <div className="flex gap-3 pt-4">
             <Button type="submit" disabled={loading} className="flex-1">
               {loading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <ButtonSpinner className="mr-2" />
                   Đang xử lý...
                 </>
               ) : (

@@ -13,6 +13,7 @@ import { api } from "@/lib/api"
 import { Document } from "@/lib/types"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@/lib/auth-context"
+import { Spinner } from "@/components/ui/spinner"
 
 export default function MyDocumentsPage() {
   const { toast } = useToast()
@@ -80,11 +81,8 @@ export default function MyDocumentsPage() {
     return (
       <div className="flex min-h-screen flex-col bg-[#fef5f7]">
         <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center space-y-4 p-8">
-            <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
-            <p className="text-gray-600">Đang tải...</p>
-          </div>
+        <main className="flex-1">
+          <Spinner size="lg" text="Đang tải..." fullScreen />
         </main>
         <Footer />
       </div>
@@ -159,10 +157,7 @@ export default function MyDocumentsPage() {
 
               <TabsContent value="list" className="mt-0">
                 {loading ? (
-                  <div className="text-center py-12">
-                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
-                    <p className="mt-4 text-gray-600">Đang tải tài liệu...</p>
-                  </div>
+                  <Spinner size="md" text="Đang tải tài liệu..." className="py-12" />
                 ) : (
                   <MyDocumentsList
                     documents={myDocuments}

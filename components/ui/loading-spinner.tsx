@@ -21,7 +21,7 @@ export function LoadingSpinner({ size = "md", className, text }: LoadingSpinnerP
         {/* Outer ring */}
         <div
           className={cn(
-            "rounded-full border-gray-200 animate-spin",
+            "rounded-full border-gray-200",
             sizeClasses[size]
           )}
           style={{
@@ -33,8 +33,9 @@ export function LoadingSpinner({ size = "md", className, text }: LoadingSpinnerP
         
         {/* Inner dot */}
         <div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          className="absolute top-1/2 left-1/2"
           style={{
+            transform: "translate(-50%, -50%)",
             animation: "pulse 1.5s ease-in-out infinite",
           }}
         >
@@ -52,7 +53,7 @@ export function LoadingSpinner({ size = "md", className, text }: LoadingSpinnerP
       
       {text && (
         <p
-          className="text-sm font-medium text-muted-foreground animate-pulse"
+          className="text-sm font-medium text-muted-foreground"
           style={{
             animation: "fadeIn 0.5s ease-in, pulse 2s ease-in-out infinite",
           }}
@@ -115,7 +116,7 @@ export function ButtonLoadingSpinner({ className }: { className?: string }) {
     <div className={cn("flex items-center gap-2", className)}>
       <div className="relative flex items-center justify-center">
         <div
-          className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin"
+          className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white"
           style={{
             animation: "spin 0.8s linear infinite",
           }}

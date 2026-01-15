@@ -61,12 +61,12 @@ export function HeroSection() {
               
               <div className="w-full max-w-[640px] mt-4">
                 <label className="flex flex-col w-full h-14 @[480px]:h-16 relative shadow-2xl shadow-blue-900/20 rounded-full">
-                  <div className="flex w-full flex-1 items-stretch rounded-full h-full overflow-hidden bg-white ring-4 ring-white/20">
+                  <div className="flex w-full flex-1 items-stretch rounded-full h-full overflow-hidden bg-white ring-4 ring-white/20 focus-visible:ring-0 focus-visible:ring-offset-0 transition-all">
                     <div className="text-secondary flex bg-white items-center justify-center pl-6 pr-2 border-r-0">
                       <Search className="text-2xl" />
                     </div>
                     <Input
-                      className="flex w-full min-w-0 flex-1 resize-none outline-none text-foreground bg-white h-full placeholder:text-gray-400 px-2 text-base font-medium border-0"
+                      className="flex w-full min-w-0 flex-1 resize-none outline-none text-foreground bg-white h-full placeholder:text-gray-400 px-2 text-base font-medium border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                       placeholder="Tìm kiếm mã môn, tên môn học (VD: CSE482)..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
@@ -86,19 +86,19 @@ export function HeroSection() {
                 <div className="mt-4 text-white/90 text-sm flex flex-wrap gap-2 justify-center items-center">
                   <span className="font-bold">Gợi ý:</span>
                   <button
-                    className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition-colors border border-white/20 backdrop-blur-sm"
+                    className="bg-white/10 hover:cursor-pointer bg-white/20 px-3 py-1 rounded-full transition-colors border border-white/20 backdrop-blur-sm"
                     onClick={() => router.push("/resources?search=Giải tích 1")}
                   >
                     Giải tích 1
                   </button>
                   <button
-                    className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition-colors border border-white/20 backdrop-blur-sm"
+                    className="bg-white/10 hover:cursor-pointer bg-white/20 px-3 py-1 rounded-full transition-colors border border-white/20 backdrop-blur-sm"
                     onClick={() => router.push("/resources?search=Vật lý đại cương")}
                   >
                     Vật lý đại cương
                   </button>
                   <button
-                    className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition-colors border border-white/20 backdrop-blur-sm"
+                    className="bg-white/10 hover:cursor-pointer bg-white/20 px-3 py-1 rounded-full transition-colors border border-white/20 backdrop-blur-sm"
                     onClick={() => router.push("/resources?search=Triết học Mác - Lênin")}
                   >
                     Triết học Mác - Lênin

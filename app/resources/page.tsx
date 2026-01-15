@@ -14,6 +14,7 @@ import { Search, Filter, FileText, Code, BarChart3, BookOpen, Building2, Eye, Lo
 import { api } from "@/lib/api"
 import type { Document, DocumentType } from "@/lib/types"
 import Link from "next/link"
+import { Spinner, ButtonSpinner } from "@/components/ui/spinner"
 
 // Helper functions
 const getDocumentTypeLabel = (type: DocumentType): { label: string; color: string } => {
@@ -128,15 +129,15 @@ export default function ResourcesPage() {
                   disabled={isSearching}
                 >
                   {isSearching ? (
-                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                    <ButtonSpinner className="mr-2" />
                   ) : (
                     <Search className="h-5 w-5 mr-2" />
                   )}
                   Tìm kiếm
                 </Button>
-                <Button size="lg" variant="outline">
+                {/* <Button size="lg" variant="outline">
                   <Filter className="h-5 w-5" />
-                </Button>
+                </Button> */}
               </div>
             </div>
           </div>
@@ -158,9 +159,10 @@ export default function ResourcesPage() {
                 </p>
               </div>
 
+
               {isSearching ? (
                 <div className="flex items-center justify-center py-16">
-                  <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                  <Spinner size="lg" />
                 </div>
               ) : searchResults.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

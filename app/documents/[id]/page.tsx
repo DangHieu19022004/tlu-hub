@@ -7,6 +7,7 @@ import DocumentActions from "@/components/document-actions"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Spinner } from "@/components/ui/spinner"
 import { 
   Download, 
   Share2, 
@@ -182,11 +183,8 @@ export default function DocumentDetailPage() {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary/30 border-t-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Đang tải tài liệu...</p>
-          </div>
+        <main className="flex-1">
+          <Spinner size="lg" text="Đang tải tài liệu..." fullScreen />
         </main>
         <Footer />
       </div>

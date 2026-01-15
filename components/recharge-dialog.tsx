@@ -15,6 +15,7 @@ import {
 import { CreditCard, Wallet, AlertCircle, CheckCircle2, Loader2, X } from "lucide-react"
 import { api } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
+import { ButtonSpinner } from "@/components/ui/spinner"
 
 interface RechargeDialogProps {
   studentId: string
@@ -244,7 +245,7 @@ export function RechargeDialog({ studentId, onSuccess, onCancel }: RechargeDialo
         >
           {loading ? (
             <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <ButtonSpinner className="mr-2" />
               Đang xử lý...
             </>
           ) : (

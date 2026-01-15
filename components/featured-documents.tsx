@@ -5,6 +5,7 @@ import { Eye, ArrowRight, FileText, Code, BarChart3, Building2 } from "lucide-re
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api"
 import type { Document } from "@/lib/types"
+import { Spinner } from "@/components/ui/spinner"
 
 export function FeaturedDocuments() {
   const [documents, setDocuments] = useState<any[]>([])
@@ -31,9 +32,7 @@ export function FeaturedDocuments() {
     return (
       <section className="w-full flex justify-center pb-8 px-4 sm:px-10">
         <div className="w-full max-w-[1100px]">
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          </div>
+          <Spinner size="lg" className="py-12" />
         </div>
       </section>
     )

@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { Crown, Check, Loader2, Sparkles, AlertCircle, X } from "lucide-react"
 import { api } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
+import { ButtonSpinner } from "@/components/ui/spinner"
 
 interface UpgradeVIPDialogProps {
   studentId: string
@@ -302,7 +303,7 @@ export function UpgradeVIPDialog({
         >
           {loading ? (
             <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <ButtonSpinner className="mr-2" />
               Đang xử lý...
             </>
           ) : (
