@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { PageLoadingSpinner, ButtonLoadingSpinner } from "@/components/ui/loading-spinner"
+import { Spinner } from "@/components/ui/spinner"
 import { useAuth } from "@/lib/auth-context"
+import { useToast } from "@/hooks/use-toast"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Lock, Mail, Eye, EyeOff, CheckCircle, XCircle } from "lucide-react"
@@ -17,6 +18,7 @@ import Link from "next/link"
 export default function LoginPage() {
   const { login, user, isLoading } = useAuth()
   const router = useRouter()
+  const { toast } = useToast()
   const [formData, setFormData] = useState({
     studentId: "",
     password: "",
@@ -51,7 +53,9 @@ export default function LoginPage() {
         // If login succeeds, user will be set and useEffect will redirect
       }, 800)
     } catch (err: any) {
-      setError(err.message || "Đăng nhập thất bại. Vui lòng thử lại.")
+      console.error("Login error:", err)
+      const errorMessage = "Đăng nhập thất bại. Vui lòng thử lại."
+      setError(errorMessage)
       setLoading(false)
     }
   }
@@ -61,7 +65,7 @@ export default function LoginPage() {
       <Header />
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         {!mounted || isLoading || user ? (
-          <PageLoadingSpinner />
+          <Spinner size="lg" text="Đang tải..." />
         ) : (
         <div 
           className="w-full max-w-md animate-in fade-in-0 slide-in-from-bottom-4 duration-500"
@@ -81,8 +85,9 @@ export default function LoginPage() {
                 />
               </div>
               <CardTitle className="text-3xl font-bold text-primary">Đăng nhập</CardTitle>
-              <CardDescription className="text-base">
-                Đăng nhập vào TLU Hub để truy cập tài liệu và khóa học
+              <CardDescription className="text-base space-y-1">
+                <p>Hệ thống dành riêng cho sinh viên Trường Đại học Thủy Lợi, hãy đăng nhập bằng tài khoản sinh viên để tiếp tục.</p>
+                <p>Nếu bạn là học sinh trường khác hãy <Link href="/contact" className="text-primary hover:underline">liên hệ với chúng tôi</Link>.</p>
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -101,7 +106,7 @@ export default function LoginPage() {
 
                 {success && (
                   <div 
-                    className="bg-green-50 border-2 border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2 animate-in fade-in-0 slide-in-from-top-2 duration-300"
+                    className="bg-green-50 border-2 border-pink-200 text-pink-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2 animate-in fade-in-0 slide-in-from-top-2 duration-300"
                     style={{
                       animation: 'successPulse 0.6s ease-in-out',
                     }}
@@ -116,14 +121,14 @@ export default function LoginPage() {
                     Mã sinh viên
                   </Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
                     <Input
                       id="studentId"
                       type="text"
                       placeholder="VD: 2251961779"
                       value={formData.studentId}
                       onChange={(e) => setFormData({ ...formData, studentId: e.target.value })}
-                      className="pl-10 h-12 text-base"
+                      className="pl-12 h-12 text-base"
                       required
                       disabled={loading || success}
                     />
@@ -135,14 +140,14 @@ export default function LoginPage() {
                     Mật khẩu
                   </Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Nhập mật khẩu"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="pl-10 pr-10 h-12 text-base"
+                      className="pl-12 pr-10 h-12 text-base"
                       required
                       disabled={loading || success}
                     />
@@ -158,21 +163,24 @@ export default function LoginPage() {
 
                 <div className="flex items-center justify-between text-sm">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" className="rounded border-gray-300" />
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-gray-300 w-4 h-4 accent-primary focus:ring-primary cursor-pointer" 
+                    />
                     <span>Ghi nhớ đăng nhập</span>
                   </label>
-                  <Link href="#" className="text-primary hover:text-accent font-medium">
-                    Quên mật khẩu?
-                  </Link>
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full h-12 text-base font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  className="w-full h-12 text-base font-bold transition-all duration-300 hover:shadow-lg"
                   disabled={loading || success}
                 >
                   {loading ? (
-                    <ButtonLoadingSpinner />
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                      <span>Đang xử lý...</span>
+                    </div>
                   ) : success ? (
                     <div className="flex items-center gap-2">
                       <CheckCircle className="h-5 w-5" />
@@ -183,24 +191,36 @@ export default function LoginPage() {
                   )}
                 </Button>
               </form>
-
-              <div className="mt-6 text-center text-sm">
-                <p className="text-gray-600">
-                  Chưa có tài khoản?{" "}
-                  <Link href="/register" className="text-primary hover:text-accent font-semibold">
-                    Đăng ký ngay
-                  </Link>
-                </p>
-              </div>
-
               <div className="mt-6 pt-6 border-t">
                 <p className="text-xs text-center text-gray-500">
                   Bằng cách đăng nhập, bạn đồng ý với{" "}
-                  <Link href="/terms" className="text-primary hover:underline">
+                  <Link 
+                    href="/terms" 
+                    className="text-primary hover:underline cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      toast({
+                        title: "Coming soon !!!",
+                        description: "Chúng tôi đang hoàn thiện tính năng này",
+                        variant: "coming-soon"
+                      })
+                    }}
+                  >
                     Điều khoản dịch vụ
                   </Link>{" "}
                   và{" "}
-                  <Link href="/privacy" className="text-primary hover:underline">
+                  <Link 
+                    href="/privacy" 
+                    className="text-primary hover:underline cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      toast({
+                        title: "Coming soon !!!",
+                        description: "Chúng tôi đang hoàn thiện tính năng này",
+                        variant: "coming-soon"
+                      })
+                    }}
+                  >
                     Chính sách bảo mật
                   </Link>
                 </p>

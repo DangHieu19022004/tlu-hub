@@ -26,7 +26,7 @@ export function ComingSoonLink({
     <a 
       href="#" 
       onClick={handleClick}
-      className="text-sm text-foreground hover:text-primary font-medium transition-colors"
+      className="text-sm text-foreground hover:text-primary font-medium transition-all duration-200 ease-in-out hover:scale-105 cursor-pointer"
     >
       {children}
     </a>

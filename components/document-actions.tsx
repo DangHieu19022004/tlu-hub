@@ -126,7 +126,7 @@ export default function DocumentActions({ documentId, price, isPurchased = false
     return (
       <div className="space-y-3">
         <Button 
-          className="w-full bg-green-600 hover:bg-green-700 text-white h-12" 
+          className="w-full bg-pink-500 hover:bg-primary text-white h-12 hover:cursor-pointer" 
           onClick={handleViewDocument}
           disabled={viewingDoc}
         >
@@ -153,7 +153,7 @@ export default function DocumentActions({ documentId, price, isPurchased = false
   return (
     <div>
       <Button 
-        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white mb-3 h-12" 
+        className="w-full  bg-pink-500 hover:bg-primary text-white mb-3 h-12 hover:cursor-pointer" 
         onClick={handlePurchase} 
         disabled={loading}
       >

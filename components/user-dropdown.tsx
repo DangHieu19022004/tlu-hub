@@ -46,9 +46,9 @@ export function UserDropdown({ user }: UserDropdownProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+      <DropdownMenuTrigger className="flex items-center gap-2 rounded-full focus:outline-none cursor-pointer hover:opacity-80 transition-opacity">
         <Avatar className="h-8 w-8">
-          <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
+          <AvatarImage src="/avartar/male1.png" />
           <AvatarFallback className="bg-primary text-white text-xs">{getInitials(user.name)}</AvatarFallback>
         </Avatar>
         <span className="hidden text-sm font-medium md:inline-block">{user.name || "User"}</span>
@@ -62,11 +62,11 @@ export function UserDropdown({ user }: UserDropdownProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleProfile} className="cursor-pointer">
-          <User className="mr-2 h-4 w-4" />
+          <User className="mr-2 h-4 w-4 hover:text-white" />
           <span>Hồ sơ cá nhân</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut className="mr-2 h-4 w-4 hover:text-white" />
           <span>Đăng xuất</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

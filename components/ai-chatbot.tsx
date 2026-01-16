@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { X, Send, Bot, User, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
+import { useToast } from "@/hooks/use-toast"
 
 interface Message {
   id: string
@@ -19,6 +20,7 @@ interface Message {
 const quickQuestions = ["Thông tin về ký túc xá", "Học bổng sinh viên", "Tài liệu môn OOP", "Khóa học miễn phí"]
 
 export function AIChatbot() {
+  const { toast } = useToast()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -114,7 +116,12 @@ export function AIChatbot() {
   }
 
   const handleOpenChat = () => {
-    setIsOpen(true)
+    toast({
+      title: "Coming soon !!!",
+      description: "Tính năng này đang được phát triển",
+      variant: "coming-soon"
+    })
+    // setIsOpen(true)
     setShowTooltip(false)
     if (tooltipTimerRef.current) {
       clearTimeout(tooltipTimerRef.current)

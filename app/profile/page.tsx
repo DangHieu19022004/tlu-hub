@@ -159,7 +159,7 @@ export default function ProfilePage() {
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                 <Avatar className="h-24 w-24 border-4 border-primary/20">
-                  <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} />
+                  <AvatarImage src="/avartar/male1.png" />
                   <AvatarFallback className="text-2xl">{user.name[0]}</AvatarFallback>
                 </Avatar>
 
@@ -172,7 +172,7 @@ export default function ProfilePage() {
                         VIP
                       </Badge>
                     ) : (
-                      <Badge variant="secondary">Miễn phí</Badge>
+                      <Badge className="bg-primary text-white" variant="secondary">Miễn phí</Badge>
                     )}
                   </div>
 
@@ -185,7 +185,7 @@ export default function ProfilePage() {
 
                   {!profileData.isVIP && (
                     <Button 
-                      className="mt-2" 
+                      className="mt-2 cursor-pointer" 
                       size="sm"
                       onClick={() => setShowUpgradeVIPDialog(true)}
                     >
@@ -213,19 +213,19 @@ export default function ProfilePage() {
                   <p className="text-3xl font-bold mt-1">{profileData.balance.toLocaleString("vi-VN")} đ</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-3">
                   <Button 
-                    className="w-full" 
+                    className="w-full cursor-pointer" 
                     variant="default"
                     onClick={() => setShowRechargeDialog(true)}
                   >
                     <CreditCard className="h-4 w-4 mr-2" />
                     Nạp tiền
                   </Button>
-                  <Button className="w-full bg-transparent" variant="outline">
+                  {/* <Button className="w-full bg-transparent cursor-pointer" variant="outline">
                     <History className="h-4 w-4 mr-2" />
                     Lịch sử
-                  </Button>
+                  </Button> */}
                 </div>
 
                 <Separator />

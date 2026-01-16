@@ -25,7 +25,7 @@ function AuthButtonsComponent() {
   }
 
   return (
-    <Button className="shadow-sm bg-primary text-primary-foreground hover:bg-accent hover:text-white font-semibold" asChild>
+    <Button className="shadow-sm bg-primary text-primary-foreground hover:bg-accent hover:text-white font-semibold cursor-pointer" asChild>
       <Link href="/login" prefetch={true}>Đăng Nhập</Link>
     </Button>
   )

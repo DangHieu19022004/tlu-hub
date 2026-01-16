@@ -36,15 +36,16 @@ import { useEffect, useState } from "react"
 import { api } from "@/lib/api"
 import type { Document, DocumentType, AccessLevel } from "@/lib/types"
 import { useAuth } from "@/lib/auth-context"
+import { useToast } from "@/hooks/use-toast"
 
 // Helper functions
 const getDocumentTypeLabel = (type: DocumentType): { label: string; color: string } => {
   switch (type) {
-    case 0: return { label: "Bài giảng", color: "bg-blue-100 text-blue-700 border-blue-200" }
-    case 1: return { label: "Bài tập", color: "bg-green-100 text-green-700 border-green-200" }
-    case 2: return { label: "Đề thi", color: "bg-red-100 text-red-700 border-red-200" }
-    case 3: return { label: "Tài liệu tham khảo", color: "bg-purple-100 text-purple-700 border-purple-200" }
-    default: return { label: "Khác", color: "bg-gray-100 text-gray-700 border-gray-200" }
+    case 0: return { label: "Bài giảng", color: "bg-pink-50 text-pink-600 border-pink-200" }
+    case 1: return { label: "Bài tập", color: "bg-pink-50 text-pink-600 border-pink-200" }
+    case 2: return { label: "Đề thi", color: "bg-pink-50 text-pink-600 border-pink-200" }
+    case 3: return { label: "Tài liệu tham khảo", color: "bg-pink-50 text-pink-600 border-pink-200" }
+    default: return { label: "Khác", color: "bg-pink-50 text-pink-600 border-pink-200" }
   }
 }
 
@@ -53,22 +54,22 @@ const getAccessLevelLabel = (level: AccessLevel): { label: string; icon: JSX.Ele
     case 0: return { 
       label: "Công khai", 
       icon: <Eye className="w-4 h-4" />, 
-      color: "bg-green-100 text-green-700 border-green-200" 
+      color: "bg-emerald-50 text-emerald-600 border-emerald-200" 
     }
     case 1: return { 
       label: "Sinh viên", 
       icon: <User className="w-4 h-4" />, 
-      color: "bg-blue-100 text-blue-700 border-blue-200" 
+      color: "bg-sky-50 text-sky-600 border-sky-200" 
     }
     case 2: return { 
       label: "VIP", 
       icon: <Star className="w-4 h-4" />, 
-      color: "bg-yellow-100 text-yellow-700 border-yellow-200" 
+      color: "bg-amber-50 text-amber-600 border-amber-200" 
     }
     default: return { 
       label: "Không xác định", 
       icon: <Shield className="w-4 h-4" />, 
-      color: "bg-gray-100 text-gray-700 border-gray-200" 
+      color: "bg-gray-50 text-gray-600 border-gray-200" 
     }
   }
 }
@@ -110,6 +111,7 @@ export default function DocumentDetailPage() {
   const params = useParams()
   const documentId = params.id as string
   const { user } = useAuth()
+  const { toast } = useToast()
   
   const [document, setDocument] = useState<Document | null>(null)
   const [reviews, setReviews] = useState<any[]>([])
@@ -118,6 +120,23 @@ export default function DocumentDetailPage() {
   const [error, setError] = useState<string | null>(null)
   const [isPurchased, setIsPurchased] = useState(false)
   const [userBalance, setUserBalance] = useState(0)
+
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      toast({
+        title: "Đã copy url thành công",
+        description: "Link tài liệu đã được sao chép vào clipboard",
+        variant: "default"
+      })
+    } catch (err) {
+      toast({
+        title: "Lỗi",
+        description: "Không thể sao chép link",
+        variant: "destructive"
+      })
+    }
+  }
 
   useEffect(() => {
     async function loadDocument() {
@@ -203,7 +222,7 @@ export default function DocumentDetailPage() {
             <h2 className="text-2xl font-bold text-foreground mb-2">Không tìm thấy tài liệu</h2>
             <p className="text-muted-foreground mb-6">{error || "Tài liệu này có thể đã bị xóa hoặc không tồn tại."}</p>
             <Link href="/resources">
-              <Button className="bg-primary hover:bg-accent">
+              <Button className="bg-primary hover:bg-accent cursor-pointer">
                 <Home className="w-4 h-4 mr-2" />
                 Về trang tài liệu
               </Button>
@@ -228,11 +247,11 @@ export default function DocumentDetailPage() {
         <div className="border-b bg-card">
           <div className="container mx-auto max-w-7xl px-4 py-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Link href="/" className="hover:text-primary transition-colors">
+              <Link href="/" className="hover:text-primary transition-colors cursor-pointer">
                 <Home className="w-4 h-4" />
               </Link>
               <ChevronRight className="w-4 h-4" />
-              <Link href="/resources" className="hover:text-primary transition-colors">
+              <Link href="/resources" className="hover:text-primary transition-colors cursor-pointer">
                 Tài liệu
               </Link>
               <ChevronRight className="w-4 h-4" />
@@ -243,43 +262,45 @@ export default function DocumentDetailPage() {
 
         <div className="container mx-auto max-w-7xl px-4 py-8">
           {/* Document Title & Quick Stats */}
-          <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 rounded-2xl shadow-sm p-6 mb-8 border border-border">
-            <div className="flex flex-wrap gap-2 mb-4">
-              <Badge className={`${typeInfo.color} border font-semibold px-3 py-1`}>
-                <DocIcon className="w-3.5 h-3.5 mr-1.5" />
-                {typeInfo.label}
-              </Badge>
-              <Badge className={`${accessInfo.color} border font-semibold px-3 py-1 flex items-center gap-1.5`}>
-                {accessInfo.icon}
-                {accessInfo.label}
-              </Badge>
-              {document.subject && (
-                <Badge className="bg-purple-100 text-purple-700 border-purple-200 border font-semibold px-3 py-1">
-                  <BookOpen className="w-3.5 h-3.5 mr-1.5" />
-                  {document.subject}
+          <Card className="rounded-3xl border border-primary/20 bg-white shadow-xl shadow-primary/10 mb-8">
+            <CardContent className="px-6 py-2">
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Badge className="bg-pink-50 text-pink-600 border-pink-200 border font-semibold px-3 py-1">
+                  <DocIcon className="w-3.5 h-3.5 mr-1.5" />
+                  {typeInfo.label}
                 </Badge>
-              )}
-            </div>
-            
-            <h1 className="text-3xl font-black text-foreground mb-4 leading-tight">
-              {document.title}
-            </h1>
-            
-            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span>{formatDate(document.uploadDate)}</span>
+                <Badge className="bg-pink-50 text-pink-600 border-pink-200 border font-semibold px-3 py-1 flex items-center gap-1.5">
+                  {accessInfo.icon}
+                  {accessInfo.label}
+                </Badge>
+                {document.subject && (
+                  <Badge className="bg-pink-50 text-pink-600 border-pink-200 border font-semibold px-3 py-1">
+                    <BookOpen className="w-3.5 h-3.5 mr-1.5" />
+                    {document.subject}
+                  </Badge>
+                )}
               </div>
-              <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4" />
-                <span>{document.viewsCount?.toLocaleString() || 0} lượt xem</span>
+              
+              <h1 className="text-3xl font-black text-foreground mb-4 leading-tight">
+                {document.title}
+              </h1>
+              
+              <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>{formatDate(document.uploadDate)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Eye className="w-4 h-4" />
+                  <span>{document.viewsCount?.toLocaleString() || 0} lượt xem</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span>Cập nhật gần đây</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                <span>Cập nhật gần đây</span>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Document Preview & Details */}
@@ -323,177 +344,20 @@ export default function DocumentDetailPage() {
                 </Card>
               )}
 
-              {/* Tabs: Description, Details, Reviews */}
-              <Tabs defaultValue="description" className="w-full">
-                <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent">
-                  <TabsTrigger
-                    value="description"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 font-semibold"
-                  >
-                    Mô tả
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="details"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 font-semibold"
-                  >
-                    Chi tiết
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="reviews"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3 font-semibold"
-                  >
-                    Đánh giá
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="description" className="mt-6">
-                  <Card className="shadow-sm border-border">
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-bold text-foreground mb-4">Mô tả tài liệu</h3>
-                      <div className="prose prose-sm max-w-none">
-                        <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                          {document.description || "Chưa có mô tả chi tiết cho tài liệu này."}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="details" className="mt-6">
-                  <Card className="shadow-sm border-border">
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-bold text-foreground mb-6">Thông tin chi tiết</h3>
-                      <div className="grid md:grid-cols-2 gap-8">
-                        {/* Left Column - Basic Info */}
-                        <div>
-                          <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-primary" />
-                            Thông tin cơ bản
-                          </h4>
-                          <div className="space-y-3">
-                            <div className="flex justify-between py-2.5 border-b border-border">
-                              <span className="text-muted-foreground">Loại tài liệu:</span>
-                              <span className="font-semibold text-foreground">{typeInfo.label}</span>
-                            </div>
-                            <div className="flex justify-between py-2.5 border-b border-border">
-                              <span className="text-muted-foreground">Quyền truy cập:</span>
-                              <span className="font-semibold text-foreground">{accessInfo.label}</span>
-                            </div>
-                            {document.subject && (
-                              <div className="flex justify-between py-2.5 border-b border-border">
-                                <span className="text-muted-foreground">Môn học:</span>
-                                <span className="font-semibold text-foreground">{document.subject}</span>
-                              </div>
-                            )}
-                            <div className="flex justify-between py-2.5 border-b border-border">
-                              <span className="text-muted-foreground">Ngày đăng:</span>
-                              <span className="font-semibold text-foreground">{formatDate(document.uploadDate)}</span>
-                            </div>
-                            <div className="flex justify-between py-2.5">
-                              <span className="text-muted-foreground">Định dạng:</span>
-                              <span className="font-semibold text-foreground">PDF</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Right Column - Statistics */}
-                        <div>
-                          <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-                            <BarChart3 className="w-5 h-5 text-primary" />
-                            Thống kê
-                          </h4>
-                          <div className="space-y-3">
-                            <div className="flex justify-between py-2.5 border-b border-border">
-                              <span className="text-muted-foreground">Lượt xem:</span>
-                              <span className="font-semibold text-foreground">{document.viewsCount?.toLocaleString() || 0}</span>
-                            </div>
-                            <div className="flex justify-between py-2.5 border-b border-border">
-                              <span className="text-muted-foreground">Giá:</span>
-                              <span className="font-semibold text-primary">{formatPrice(document.price)}</span>
-                            </div>
-                            <div className="flex justify-between py-2.5 border-b border-border">
-                              <span className="text-muted-foreground">Trạng thái:</span>
-                              <Badge className="bg-green-100 text-green-700 border-green-200">
-                                Đang hoạt động
-                              </Badge>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="reviews" className="mt-6">
-                  <Card className="shadow-sm border-border">
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-bold text-foreground mb-6">Đánh giá từ người dùng</h3>
-                      
-                      {/* Rating Summary */}
-                      <div className="mb-6 pb-6 border-b border-border">
-                        <div className="flex items-center gap-2 mb-2">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className="w-5 h-5 fill-yellow-400 text-yellow-400"
-                            />
-                          ))}
-                          <span className="text-xl font-bold text-foreground ml-2">5.0 trên 5</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">Chưa có đánh giá nào</p>
-                      </div>
-
-                      {/* Write Review Button */}
-                      <Button className="w-full mb-6 bg-primary hover:bg-accent text-primary-foreground">
-                        <MessageSquare className="w-4 h-4 mr-2" />
-                        Viết đánh giá đầu tiên
-                      </Button>
-
-                      {/* Reviews List */}
-                      {reviews.length === 0 ? (
-                        <div className="text-center py-12 bg-muted/30 rounded-lg">
-                          <Star className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                          <p className="text-muted-foreground">Chưa có đánh giá nào cho tài liệu này</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-6">
-                          {reviews.map((review) => (
-                            <div key={review.id} className="pb-6 border-b border-border last:border-b-0">
-                              <div className="flex items-start gap-3 mb-3">
-                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                  <User className="w-5 h-5 text-primary" />
-                                </div>
-                                <div className="flex-1">
-                                  <div className="flex items-center justify-between mb-1">
-                                    <h5 className="font-semibold text-foreground">{review.author}</h5>
-                                    <div className="flex items-center gap-1">
-                                      {[...Array(5)].map((_, i) => (
-                                        <Star
-                                          key={i}
-                                          className={`w-4 h-4 ${
-                                            i < review.rating
-                                              ? "fill-yellow-400 text-yellow-400"
-                                              : "fill-gray-200 text-gray-200"
-                                          }`}
-                                        />
-                                      ))}
-                                    </div>
-                                  </div>
-                                  <p className="text-sm text-muted-foreground mb-2">{review.comment}</p>
-                                  <p className="text-xs text-muted-foreground">{review.date}</p>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
+              {/* Description Section */}
+              <Card className="shadow-sm border-border">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold text-foreground mb-4">Mô tả tài liệu</h3>
+                  <div className="prose prose-sm max-w-none">
+                    <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                      {document.description || "Chưa có mô tả chi tiết cho tài liệu này."}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Related Documents */}
-              {relatedDocuments.length > 0 && (
+              {/* {relatedDocuments.length > 0 && (
                 <div className="mt-8">
                   <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
                     <FileText className="w-6 h-6 text-primary" />
@@ -505,7 +369,7 @@ export default function DocumentDetailPage() {
                       const RelatedIcon = getDocumentIcon(doc.type)
                       
                       return (
-                        <Link key={doc.documentID} href={`/documents/${doc.documentID}`}>
+                        <Link key={doc.documentID} href={`/documents/${doc.documentID}`} className="cursor-pointer">
                           <Card className="group hover:shadow-xl transition-all duration-300 h-full border-border hover:border-primary/50">
                             <CardContent className="p-0">
                               <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
@@ -516,7 +380,7 @@ export default function DocumentDetailPage() {
                                   {relatedTypeInfo.label}
                                 </Badge>
                                 {doc.price === 0 && (
-                                  <Badge className="absolute top-3 right-3 bg-green-500 hover:bg-green-600 text-white border-0">
+                                  <Badge className="absolute top-3 right-3 bg-pink-500 hover:bg-pink-600 text-white border-0">
                                     Miễn phí
                                   </Badge>
                                 )}
@@ -542,7 +406,7 @@ export default function DocumentDetailPage() {
                     })}
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* Right Column - Pricing & Actions */}
@@ -567,21 +431,13 @@ export default function DocumentDetailPage() {
                     isPurchased={isPurchased}
                     currentBalance={userBalance}
                   />
-
                   <Button
                     variant="outline"
-                    className="w-full h-12 border-border hover:bg-muted hover:border-primary/50 transition-all group"
-                  >
-                    <Heart className="w-5 h-5 mr-2 group-hover:text-red-500 transition-colors" />
-                    Thêm vào yêu thích
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className="w-full h-12 border-border hover:bg-muted hover:border-primary/50 transition-all group"
+                    className="w-full h-12 border-border hover:bg-muted hover:border-primary/50 transition-all group cursor-pointer"
+                    onClick={handleShare}
                   >
                     <Share2 className="w-5 h-5 mr-2 group-hover:text-primary transition-colors" />
-                    Chia sẻ
+                    <span className="group-hover:text-primary transition-colors">Chia sẻ</span>
                   </Button>
 
                   <div className="border-t border-border pt-6 mt-6">
@@ -628,8 +484,8 @@ export default function DocumentDetailPage() {
                     <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                       Cần hỗ trợ về tài liệu này? Đội ngũ của chúng tôi luôn sẵn sàng giúp đỡ bạn.
                     </p>
-                    <Link href="/contact">
-                      <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all">
+                    <Link href="/contact" className="cursor-pointer">
+                      <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all cursor-pointer">
                         Liên hệ hỗ trợ →
                       </Button>
                     </Link>

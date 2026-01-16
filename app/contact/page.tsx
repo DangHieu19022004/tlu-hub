@@ -1,3 +1,5 @@
+"use client"
+
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { AIChatbot } from "@/components/ai-chatbot"
@@ -6,8 +8,75 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Mail, Phone, MapPin, Send } from "lucide-react"
+import { useState } from "react"
+import { useToast } from "@/hooks/use-toast"
 
 export default function ContactPage() {
+  const { toast } = useToast()
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Vui lòng nhập họ và tên"
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Vui lòng nhập email"
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Email không hợp lệ"
+    }
+
+    if (!formData.subject.trim()) {
+      newErrors.subject = "Vui lòng nhập tiêu đề"
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = "Vui lòng nhập nội dung"
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = "Nội dung phải có ít nhất 10 ký tự"
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (validateForm()) {
+      toast({
+        title: "Coming soon !!!",
+        description: "Tính năng gửi tin nhắn đang được phát triển",
+        variant: "coming-soon"
+      })
+      
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: ""
+      })
+      setErrors({})
+    }
+  }
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: "" }))
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-[#fef5f7]">
       <Header />
@@ -39,29 +108,54 @@ export default function ContactPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Họ và tên</label>
-                    <Input placeholder="Nguyễn Văn A" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Email</label>
-                    <Input type="email" placeholder="email@tlu.edu.vn" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Tiêu đề</label>
-                    <Input placeholder="Vấn đề bạn muốn liên hệ" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Nội dung</label>
-                    <Textarea
-                      placeholder="Mô tả chi tiết câu hỏi hoặc vấn đề của bạn..."
-                      rows={5}
-                    />
-                  </div>
-                  <Button className="w-full bg-primary hover:bg-accent">
-                    <Send className="mr-2 h-4 w-4" />
-                    Gửi tin nhắn
-                  </Button>
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Họ và tên</label>
+                      <Input 
+                        placeholder="Nguyễn Văn A" 
+                        value={formData.name}
+                        onChange={(e) => handleChange("name", e.target.value)}
+                        className={errors.name ? "border-red-500" : ""}
+                      />
+                      {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Email</label>
+                      <Input 
+                        type="email" 
+                        placeholder="email@tlu.edu.vn" 
+                        value={formData.email}
+                        onChange={(e) => handleChange("email", e.target.value)}
+                        className={errors.email ? "border-red-500" : ""}
+                      />
+                      {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Tiêu đề</label>
+                      <Input 
+                        placeholder="Vấn đề bạn muốn liên hệ" 
+                        value={formData.subject}
+                        onChange={(e) => handleChange("subject", e.target.value)}
+                        className={errors.subject ? "border-red-500" : ""}
+                      />
+                      {errors.subject && <p className="text-xs text-red-500">{errors.subject}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Nội dung</label>
+                      <Textarea
+                        placeholder="Mô tả chi tiết câu hỏi hoặc vấn đề của bạn..."
+                        rows={5}
+                        value={formData.message}
+                        onChange={(e) => handleChange("message", e.target.value)}
+                        className={errors.message ? "border-red-500" : ""}
+                      />
+                      {errors.message && <p className="text-xs text-red-500">{errors.message}</p>}
+                    </div>
+                    <Button type="submit" className="w-full bg-primary hover:bg-accent cursor-pointer">
+                      <Send className="mr-2 h-4 w-4" />
+                      Gửi tin nhắn
+                    </Button>
+                  </form>
                 </CardContent>
               </Card>
 
