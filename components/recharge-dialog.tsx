@@ -64,12 +64,11 @@ export function RechargeDialog({ studentId, onSuccess, onCancel }: RechargeDialo
       toast({
         title: "Gửi yêu cầu nạp tiền thành công!",
         description: "Yêu cầu của bạn đang được xử lý. Vui lòng chờ xác nhận từ quản trị viên.",
+        duration: 5000,
       })
       
-      // Sau 3 giây, gọi callback success
-      setTimeout(() => {
-        onSuccess?.()
-      }, 3000)
+      // Gọi callback success để refresh data
+      onSuccess?.()
     } catch (err: any) {
       console.error("Recharge failed:", err)
       toast({
