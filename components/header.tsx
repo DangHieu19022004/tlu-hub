@@ -9,6 +9,7 @@ import { useState, Suspense, memo, useCallback } from "react"
 import { cn } from "@/lib/utils"
 import { AuthButtons } from "@/components/auth-buttons"
 import { AuthButtonsSkeleton } from "@/components/auth-buttons-skeleton"
+import { ComingSoonLink } from "./coming-soon-link"
 
 function HeaderComponent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -65,7 +66,7 @@ function HeaderComponent() {
             >
               Tài liệu
             </Link>
-            <Link
+            {/* <Link
               href="/courses"
               className={cn(
                 "text-sm font-medium transition-all duration-200 ease-in-out hover:scale-105",
@@ -75,7 +76,10 @@ function HeaderComponent() {
               )}
             >
               Đăng tải
-            </Link>
+            </Link> */}
+            <ComingSoonLink>
+              Đăng tải
+            </ComingSoonLink>
             <Link
               href="/contact"
               className={cn(

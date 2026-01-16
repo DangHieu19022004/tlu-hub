@@ -1,8 +1,22 @@
+'use client'
+
 import Link from "next/link"
 import Image from "next/image"
-import { Mail, Globe } from "lucide-react"
+import { Facebook } from "lucide-react"
+import { FaUsers } from "react-icons/fa"
+import { SiZalo } from "react-icons/si"
+import { ComingSoonLink } from "@/components/coming-soon-link"
+import { toast } from "@/hooks/use-toast"
 
 export function Footer() {
+  const handleComingSoon = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    toast({
+      title: "Coming soon !!!",
+      description: "Tính năng này đang được phát triển",
+      variant: "coming-soon"
+    })
+  }
   return (
     <footer className="bg-white border-t border-red-50 py-12">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-10 flex flex-col md:flex-row justify-between gap-10">
@@ -23,67 +37,46 @@ export function Footer() {
           </p>
           <div className="flex gap-3 mt-2">
             <Link
-              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-accent transition-all"
-              href="#"
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-600 transition-all"
+              href="https://www.facebook.com/tluhub/"
+              target="_blank"
+              title="Fanpage Facebook"
             >
-              <Globe className="w-5 h-5" />
+              <Facebook className="w-5 h-5" />
             </Link>
             <Link
-              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-primary transition-all"
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-600 transition-all cursor-pointer"
               href="#"
+              onClick={handleComingSoon}
+              title="Group Facebook"
             >
-              <Mail className="w-5 h-5" />
+              <FaUsers className="w-5 h-5" />
+            </Link>
+            <Link
+              className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-500 transition-all cursor-pointer"
+              href="#"
+              onClick={handleComingSoon}
+              title="Zalo"
+            >
+              <SiZalo className="w-5 h-5" />
             </Link>
           </div>
         </div>
         
-        <div className="flex flex-wrap gap-16">
-          <div className="flex flex-col gap-4">
-            <h4 className="font-bold text-foreground text-lg">
-              Khám phá
-            </h4>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/resources"
-            >
-              Tài liệu mới
-            </Link>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/courses"
-            >
-              Môn học phổ biến
-            </Link>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/resources"
-            >
-              Bảng xếp hạng
-            </Link>
-          </div>
-          
+        <div className="flex flex-wrap gap-8">           
           <div className="flex flex-col gap-4">
             <h4 className="font-bold text-foreground text-lg">
               Hỗ trợ
             </h4>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/resources"
-            >
+            <ComingSoonLink>
               Hướng dẫn đăng tải
-            </Link>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/blog"
-            >
+            </ComingSoonLink>
+            <ComingSoonLink>
               Quy định cộng đồng
-            </Link>
-            <Link
-              className="text-sm text-gray-600 hover:text-primary font-medium"
-              href="/contact"
-            >
+            </ComingSoonLink>
+            <ComingSoonLink>
               Liên hệ
-            </Link>
+            </ComingSoonLink>
           </div>
         </div>
       </div>

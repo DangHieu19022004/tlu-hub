@@ -19,7 +19,7 @@ const testimonials = [
     content:
       "Nền tảng tuyệt vời với nhiều tài liệu miễn phí. Giảng viên nhiệt tình và hỗ trợ tốt. Tôi đã học được rất nhiều kỹ năng thiết kế UI/UX từ các khóa học ở đây.",
     rating: 5,
-    avatar: "/avartar/female1.png",
+    avatar: "/avartar/female4.png",
   },
   {
     id: 3,

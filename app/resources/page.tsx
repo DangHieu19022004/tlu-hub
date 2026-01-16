@@ -15,6 +15,7 @@ import { api } from "@/lib/api"
 import type { Document, DocumentType } from "@/lib/types"
 import Link from "next/link"
 import { Spinner, ButtonSpinner } from "@/components/ui/spinner"
+import { toast } from "@/hooks/use-toast"
 
 // Helper functions
 const getDocumentTypeLabel = (type: DocumentType): { label: string; color: string } => {
@@ -52,7 +53,16 @@ export default function ResourcesPage() {
   const [searchResults, setSearchResults] = useState<Document[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
-
+  
+  const handleComingSoon = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      toast({
+        title: "Coming soon !!!",
+        description: "Tính năng này đang được phát triển",
+        variant: "coming-soon"
+      })
+    }
+    
   // Auto search when query param exists
   useEffect(() => {
     const query = searchParams.get("search")
@@ -127,7 +137,7 @@ export default function ResourcesPage() {
                 </div>
                 <Button 
                   size="lg" 
-                  className="bg-primary hover:bg-accent h-12"
+                  className="bg-primary hover:bg-accent cursor-pointer h-12"
                   onClick={handleSearch}
                   disabled={isSearching}
                 >
@@ -138,9 +148,12 @@ export default function ResourcesPage() {
                   )}
                   Tìm kiếm
                 </Button>
-                {/* <Button size="lg" variant="outline">
-                  <Filter className="h-5 w-5" />
-                </Button> */}
+                <Button  
+                  className="group rounded-xl border-1 border-primary bg-card p-3 h-12 transition-all hover:bg-primary hover:shadow-lg hover:shadow-primary/10 cursor-pointer"
+                  onClick={handleComingSoon}
+                >
+                  <Filter className="h-5 w-5 text-primary group-hover:text-white transition-colors" />
+                </Button >
               </div>
             </div>
           </div>
