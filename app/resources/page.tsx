@@ -48,6 +48,7 @@ const formatPrice = (price?: number): string => {
 export default function ResourcesPage() {
   const searchParams = useSearchParams()
   const [searchKeyword, setSearchKeyword] = useState("")
+  const [lastSearchKeyword, setLastSearchKeyword] = useState("")
   const [searchResults, setSearchResults] = useState<Document[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
@@ -65,11 +66,13 @@ export default function ResourcesPage() {
     if (!keyword.trim()) {
       setSearchResults([])
       setHasSearched(false)
+      setLastSearchKeyword("")
       return
     }
 
     setIsSearching(true)
     setHasSearched(true)
+    setLastSearchKeyword(keyword.trim())
     try {
       const response = await api.searchDocuments(keyword.trim(), 50)
       const docs = response?.data || response || []
@@ -110,7 +113,7 @@ export default function ResourcesPage() {
 
             {/* Search Bar */}
             <div className="max-w-3xl mx-auto">
-              <div className="flex gap-2">
+              <div className="flex items-center gap-2">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input
@@ -124,7 +127,7 @@ export default function ResourcesPage() {
                 </div>
                 <Button 
                   size="lg" 
-                  className="bg-primary hover:bg-accent"
+                  className="bg-primary hover:bg-accent h-12"
                   onClick={handleSearch}
                   disabled={isSearching}
                 >
@@ -154,7 +157,7 @@ export default function ResourcesPage() {
                 <p className="text-muted-foreground">
                   {isSearching 
                     ? "Đang tìm kiếm..." 
-                    : `Tìm thấy ${searchResults.length} tài liệu cho "${searchKeyword}"`
+                    : `Tìm thấy ${searchResults.length} tài liệu cho "${lastSearchKeyword}"`
                   }
                 </p>
               </div>
