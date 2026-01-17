@@ -153,6 +153,7 @@ export interface LoginResponse {
     name: string
     isVIP: boolean
     balance: number
+    gender: string
   }
 }
 

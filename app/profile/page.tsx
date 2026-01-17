@@ -27,6 +27,7 @@ import {
   Edit,
   Eye,
   EyeOff,
+  Loader2,
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { api, ApiConfig } from "@/lib/api"
@@ -56,19 +57,23 @@ export default function ProfilePage() {
 
   useEffect(() => {
     setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
     if (!user) {
       router.push("/login")
     }
-  }, [user, router])
+  }, [mounted, user, router])
 
   // Load profile data from API - MOVED BEFORE early return
   useEffect(() => {
-    if (!user) return // Don't fetch if no user yet
+    if (!mounted || !user) return // Wait for mount and user to be ready
     
     async function loadProfileData() {
       setLoading(true)
       try {
-        const studentIdToUse = user!.studentId ?? user!.email
+        const studentIdToUse = user.studentId ?? user.email
         
         if (ApiConfig.debug) {
           console.log("👤 Loading profile data for:", studentIdToUse)
@@ -112,7 +117,7 @@ export default function ProfilePage() {
       }
     }
     void loadProfileData()
-  }, [user])
+  }, [mounted, user])
 
   if (!mounted || !user) {
     return null
@@ -210,7 +215,16 @@ export default function ProfilePage() {
               <CardContent className="space-y-4">
                 <div className="rounded-lg bg-gradient-to-br from-primary to-primary/80 p-6 text-white">
                   <p className="text-sm opacity-90">Số dư hiện tại</p>
-                  <p className="text-3xl font-bold mt-1">{profileData.balance.toLocaleString("vi-VN")} đ</p>
+                  <p className="text-3xl font-bold mt-1 flex items-center gap-2">
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-8 w-8" style={{ animation: 'spin 1s linear infinite' }} />
+                        <span className="text-lg">Đang tải...</span>
+                      </>
+                    ) : (
+                      <>{profileData.balance.toLocaleString("vi-VN")} đ</>
+                    )}
+                  </p>
                 </div>
 
                 <div className="grid gap-3">
@@ -503,10 +517,19 @@ export default function ProfilePage() {
           <div onClick={(e) => e.stopPropagation()}>
             <RechargeDialog
               studentId={user.studentId || user.email}
-              onSuccess={() => {
+              onSuccess={async () => {
                 setShowRechargeDialog(false)
-                // Reload profile data after recharge
-                window.location.reload()
+                // Reload profile data without full page reload
+                try {
+                  const studentIdToUse = user.studentId ?? user.email
+                  const studentInfo = await api.getStudentInfo(studentIdToUse)
+                  setProfileData((prev: any) => ({
+                    ...prev,
+                    balance: studentInfo.balance,
+                  }))
+                } catch (err) {
+                  console.warn("Could not refresh balance:", err)
+                }
               }}
               onCancel={() => setShowRechargeDialog(false)}
             />
@@ -526,10 +549,21 @@ export default function ProfilePage() {
               currentBalance={profileData.balance}
               isVIP={profileData.isVIP}
               vipEndDate={profileData.vipEndDate}
-              onSuccess={() => {
+              onSuccess={async () => {
                 setShowUpgradeVIPDialog(false)
-                // Reload profile data after upgrade
-                window.location.reload()
+                // Reload profile data without full page reload
+                try {
+                  const studentIdToUse = user.studentId ?? user.email
+                  const studentInfo = await api.getStudentInfo(studentIdToUse)
+                  setProfileData((prev: any) => ({
+                    ...prev,
+                    isVIP: studentInfo.isVIP,
+                    vipEndDate: studentInfo.vipEndDate,
+                    balance: studentInfo.balance,
+                  }))
+                } catch (err) {
+                  console.warn("Could not refresh profile:", err)
+                }
               }}
               onCancel={() => setShowUpgradeVIPDialog(false)}
             />

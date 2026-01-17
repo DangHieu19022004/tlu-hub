@@ -20,7 +20,7 @@ export function Toaster() {
         const isComingSoon = variant === 'coming-soon'
         const isDestructive = variant === 'destructive'
         return (
-          <Toast key={id} duration={props.duration || 5000} {...props} className={isDestructive ? "border-l-4 border-red-500 bg-red-50 shadow-lg" : "border-l-4 border-l-pink-400 bg-gradient-to-r from-pink-50 to-white shadow-lg"}>
+          <Toast key={id} duration={props.duration} {...props} className={isDestructive ? "border-l-4 border-red-500 bg-red-50 shadow-lg" : "border-l-4 border-l-pink-400 bg-gradient-to-r from-pink-50 to-white shadow-lg"}>
             <div className="grid gap-1">
               {title && <ToastTitle className="text-gray-800 font-semibold">{title}</ToastTitle>}
               {description && (

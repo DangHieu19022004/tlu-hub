@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Spinner } from "@/components/ui/spinner"
 import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
 import { useState, useEffect } from "react"
@@ -65,7 +64,7 @@ export default function LoginPage() {
       <Header />
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         {!mounted || isLoading || user ? (
-          <Spinner size="lg" text="Đang tải..." />
+          <Spinner />
         ) : (
         <div 
           className="w-full max-w-md animate-in fade-in-0 slide-in-from-bottom-4 duration-500"

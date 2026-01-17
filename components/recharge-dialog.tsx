@@ -64,7 +64,7 @@ export function RechargeDialog({ studentId, onSuccess, onCancel }: RechargeDialo
       toast({
         title: "Gửi yêu cầu nạp tiền thành công!",
         description: "Yêu cầu của bạn đang được xử lý. Vui lòng chờ xác nhận từ quản trị viên.",
-        duration: 5000,
+        duration: Infinity,
       })
       
       // Gọi callback success để refresh data
@@ -74,7 +74,8 @@ export function RechargeDialog({ studentId, onSuccess, onCancel }: RechargeDialo
       toast({
         title: "Gửi yêu cầu thất bại",
         description: err.message || "Không thể gửi yêu cầu nạp tiền. Vui lòng thử lại sau.",
-        variant: "destructive",
+        variant: "default",
+        duration: Infinity,
       })
     } finally {
       setLoading(false)
@@ -234,10 +235,11 @@ export function RechargeDialog({ studentId, onSuccess, onCancel }: RechargeDialo
         </div>
       </CardContent>
       <CardFooter className="flex gap-2">
-        <Button variant="outline" onClick={onCancel} className="flex-1">
+        <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
           Hủy
         </Button>
         <Button 
+          type="button"
           onClick={handleRecharge} 
           disabled={loading || !amount || parseFloat(amount) < 10000}
           className="flex-1"

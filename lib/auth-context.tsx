@@ -12,6 +12,7 @@ interface User {
   image: string
   isVIP: boolean
   balance: number
+  gender: string
 }
 
 interface AuthContextType {
@@ -52,6 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${studentId}`,
         isVIP: response.user?.isVIP || false,
         balance: response.user?.balance || 0,
+        gender: response.user?.gender || "unknown",
       }
 
       setUser(userData)

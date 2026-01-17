@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense, useState, useCallback, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { FeaturedDocuments } from "@/components/featured-documents"
@@ -48,6 +48,7 @@ const formatPrice = (price?: number): string => {
 
 export default function ResourcesPage() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const [searchKeyword, setSearchKeyword] = useState("")
   const [lastSearchKeyword, setLastSearchKeyword] = useState("")
   const [searchResults, setSearchResults] = useState<Document[]>([])
@@ -62,27 +63,27 @@ export default function ResourcesPage() {
         variant: "coming-soon"
       })
     }
-    
-  // Auto search when query param exists
-  useEffect(() => {
-    const query = searchParams.get("search")
-    if (query) {
-      setSearchKeyword(query)
-      performSearch(query)
-    }
-  }, [searchParams])
 
-  const performSearch = async (keyword: string) => {
+  const performSearch = useCallback(async (keyword: string, updateUrl: boolean = true) => {
     if (!keyword.trim()) {
       setSearchResults([])
       setHasSearched(false)
       setLastSearchKeyword("")
+      if (updateUrl) {
+        router.push("/resources")
+      }
       return
     }
 
     setIsSearching(true)
     setHasSearched(true)
     setLastSearchKeyword(keyword.trim())
+    
+    // Update URL with search query
+    if (updateUrl) {
+      router.push(`/resources?search=${encodeURIComponent(keyword.trim())}`, { scroll: false })
+    }
+    
     try {
       const response = await api.searchDocuments(keyword.trim(), 50)
       const docs = response?.data || response || []
@@ -93,11 +94,20 @@ export default function ResourcesPage() {
     } finally {
       setIsSearching(false)
     }
-  }
+  }, [router])
+    
+  // Auto search when query param exists
+  useEffect(() => {
+    const query = searchParams.get("search")
+    if (query) {
+      setSearchKeyword(query)
+      performSearch(query, false) // Don't update URL since we're loading from URL
+    }
+  }, [searchParams, performSearch])
 
   const handleSearch = useCallback(async () => {
-    performSearch(searchKeyword)
-  }, [searchKeyword])
+    performSearch(searchKeyword, true)
+  }, [searchKeyword, performSearch])
 
   const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
