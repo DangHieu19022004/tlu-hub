@@ -42,7 +42,7 @@ export default function BlogPage() {
       <main className="flex-1">
         {/* Page Header */}
         <section className="border-b border-border bg-card py-12">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-3 sm:px-4">
             <h1 className="mb-4 text-balance text-4xl font-bold">Blog</h1>
             <p className="text-pretty text-lg text-muted-foreground">
               Tin tức, kiến thức và kinh nghiệm học tập từ cộng đồng TLU HUB
@@ -52,7 +52,7 @@ export default function BlogPage() {
 
         {/* Blog Posts */}
         <section className="py-12">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-3 sm:px-4">
             <div className="grid gap-8 lg:grid-cols-2">
               {blogPosts.map((post) => (
                 <Link key={post.id} href={`/blog/${post.id}`}>

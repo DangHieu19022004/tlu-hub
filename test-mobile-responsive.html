@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Mobile Responsive - TLU Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+            width: 100%;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px; /* px-3 = 0.75rem = 12px */
+        }
+        
+        .test-section {
+            background: #f0f0f0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .viewport-info {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 9999;
+        }
+        
+        @media (min-width: 640px) {
+            .test-container {
+                padding: 24px; /* sm:px-6 = 1.5rem = 24px */
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .test-container {
+                padding: 40px; /* md:px-10 = 2.5rem = 40px */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="viewport-info">
+        Viewport: <span id="vw"></span>px × <span id="vh"></span>px
+    </div>
+    
+    <div class="test-container">
+        <div class="test-section">
+            <h1>Test Responsive Mobile</h1>
+            <p>Min width: 360px ✅</p>
+            <p>Padding mobile (< 640px): px-3 = 12px</p>
+            <p>Padding tablet (≥ 640px): sm:px-6 = 24px</p>
+            <p>Padding desktop (≥ 768px): md:px-10 = 40px</p>
+        </div>
+        
+        <div class="test-section">
+            <h2>Kiểm tra nội dung không bị thụt</h2>
+            <p>Content được hiển thị đầy đủ với padding phù hợp</p>
+            <div style="background: white; padding: 16px; margin-top: 10px; border-radius: 5px;">
+                <p>Nội dung bên trong card</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function updateViewportInfo() {
+            document.getElementById('vw').textContent = window.innerWidth;
+            document.getElementById('vh').textContent = window.innerHeight;
+        }
+        
+        updateViewportInfo();
+        window.addEventListener('resize', updateViewportInfo);
+    </script>
+</body>
+</html>

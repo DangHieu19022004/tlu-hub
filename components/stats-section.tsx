@@ -8,9 +8,9 @@ const stats = [
 
 export function StatsSection() {
   return (
-    <section className="w-full flex justify-center py-5 px-4 sm:px-10 -mt-10 relative z-10">
+    <section className="w-full flex justify-center py-5 px-3 sm:px-6 md:px-10 -mt-10 relative z-10">
       <div className="w-full max-w-[1000px]">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {stats.map((stat) => (
             <div
               key={stat.label}

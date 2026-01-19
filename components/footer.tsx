@@ -19,7 +19,7 @@ export function Footer() {
   }
   return (
     <footer className="bg-white border-t border-red-50 py-12">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-10 flex flex-col md:flex-row justify-between gap-10">
+      <div className="max-w-[1200px] mx-auto px-3 sm:px-6 md:px-10 flex flex-col md:flex-row justify-between gap-10">
         <div className="flex flex-col gap-5 max-w-xs">
           <div className="flex items-center gap-2">
             <div className="h-10 flex items-center justify-center">
@@ -81,7 +81,7 @@ export function Footer() {
         </div>
       </div>
       
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-10 mt-12 pt-8 border-t border-gray-100 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
+      <div className="max-w-[1200px] mx-auto px-3 sm:px-6 md:px-10 mt-12 pt-8 border-t border-gray-100 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
         <p className="text-xs text-gray-400 font-medium">
           © 2024 TLU Hub. Designed for Students.
         </p>

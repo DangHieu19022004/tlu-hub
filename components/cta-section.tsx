@@ -3,7 +3,7 @@ import { Rocket } from "lucide-react"
 
 export function CTASection() {
   return (
-    <section className="w-full flex justify-center py-24 px-4 bg-secondary/5">
+    <section className="w-full flex justify-center py-24 px-3 bg-secondary/5">
       <div className="w-full max-w-[800px] flex flex-col items-center text-center gap-8 p-8 border-2 border-dashed border-secondary/30 rounded-3xl bg-white">
         <div className="size-16 bg-gradient-to-tr from-primary to-secondary rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
           <Rocket className="text-white w-10 h-10" />

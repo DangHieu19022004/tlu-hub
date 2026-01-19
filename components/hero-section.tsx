@@ -6,7 +6,7 @@ import Image from "next/image"
 
 export function HeroSection() {
   return (
-    <section className="w-full flex justify-center py-5 px-4 sm:px-10">
+    <section className="w-full flex justify-center py-5 px-3 sm:px-6 md:px-10">
       <div className="w-full max-w-[1200px] flex flex-col">
         <div className="@container">
           <div className="@[480px]:p-4">

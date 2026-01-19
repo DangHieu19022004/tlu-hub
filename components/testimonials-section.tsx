@@ -43,7 +43,7 @@ const testimonials = [
 export function TestimonialsSection() {
   return (
     <section className="bg-background py-16 lg:py-24">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-3 sm:px-4">
         <div className="mb-12 text-center">
           <h2 className="mb-2 text-3xl font-bold text-foreground lg:text-4xl">Phản Hồi Từ Học Viên</h2>
           <p className="text-muted-foreground">Những gì học viên nói về chúng tôi</p>

@@ -4,7 +4,7 @@ import { BookOpen, CheckCircle, Users } from "lucide-react"
 export function AboutSection() {
   return (
     <section className="w-full flex justify-center py-12 bg-gradient-to-b from-white to-[#fff0f3]">
-      <div className="w-full max-w-[1100px] flex flex-col px-4 sm:px-10">
+      <div className="w-full max-w-[1100px] flex flex-col px-3 sm:px-6 md:px-10">
         <div className="flex flex-col lg:flex-row gap-12 items-center">
           <div className="flex flex-col gap-6 flex-1">
             <div className="flex flex-col gap-4">

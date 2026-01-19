@@ -155,7 +155,7 @@ export default function ProfilePage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1 bg-gradient-to-b from-background to-muted/20 py-8">
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
           {/* Profile Header */}
           <Card className="mb-8 border-2">
             <CardContent className="pt-6">

@@ -64,7 +64,7 @@ export default function DashboardPage() {
       <main className="flex-1 bg-muted/30">
         {/* Dashboard Header */}
         <section className="border-b border-border bg-card py-8">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-3 sm:px-4">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex items-center gap-4">
                 <Avatar className="h-20 w-20">
@@ -91,7 +91,7 @@ export default function DashboardPage() {
 
         {/* Stats Overview */}
         <section className="py-8">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-3 sm:px-4">
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -139,7 +139,7 @@ export default function DashboardPage() {
 
         {/* Main Content */}
         <section className="pb-12">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-3 sm:px-4">
             <Tabs defaultValue="courses" className="space-y-6">
               <TabsList>
                 <TabsTrigger value="courses">Khóa học của tôi</TabsTrigger>

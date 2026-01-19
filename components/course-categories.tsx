@@ -57,7 +57,7 @@ const categories = [
 export function CourseCategories() {
   return (
     <section className="border-b border-border py-20">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-3 sm:px-4">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-balance text-3xl font-bold lg:text-4xl">Khám Phá Danh Mục</h2>
           <p className="text-pretty text-lg text-muted-foreground">

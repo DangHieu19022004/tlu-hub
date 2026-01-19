@@ -53,14 +53,14 @@ export default function ProfilePage() {
       <Header />
       <main className="flex-1 bg-muted/30">
         <section className="border-b border-border bg-card py-8">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-3 sm:px-4">
             <h1 className="text-3xl font-bold">Cài Đặt Tài Khoản</h1>
             <p className="text-muted-foreground">Quản lý thông tin cá nhân và cài đặt tài khoản</p>
           </div>
         </section>
 
         <section className="py-8">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-3 sm:px-4">
             <div className="grid gap-6 lg:grid-cols-4">
               <div className="lg:col-span-1">
                 <Card>

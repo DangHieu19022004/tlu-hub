@@ -93,7 +93,7 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
       <main className="flex-1">
         {/* Hero Section */}
         <section className="border-b border-border bg-card">
-          <div className="container mx-auto px-4 py-12">
+          <div className="container mx-auto px-3 sm:px-4 py-12">
             <div className="grid gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
                 <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -157,7 +157,7 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
 
         {/* Content Tabs */}
         <section className="py-12">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-3 sm:px-4">
             <div className="grid gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
                 <Tabs defaultValue="curriculum" className="w-full">

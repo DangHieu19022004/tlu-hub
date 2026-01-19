@@ -120,7 +120,7 @@ export default function HomePage() {
       <Header />
       
       <main className="flex-1">
-        <section className="w-full flex justify-center py-8 px-4 sm:px-10">
+        <section className="w-full flex justify-center py-8 px-3 sm:px-6 md:px-10">
           <div className="w-full max-w-[1200px]">
             <div className="@container">
               <div className="@[480px]:p-4">
@@ -221,7 +221,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="w-full flex justify-center py-24 px-4 md:px-8 overflow-visible relative bg-gradient-to-br from-pink-100 to-pink-50">
+        <section className="w-full flex justify-center py-24 px-3 sm:px-4 md:px-8 overflow-visible relative bg-gradient-to-br from-pink-100 to-pink-50">
           <div className="w-full max-w-[1400px] relative">
             <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               <motion.div
@@ -303,7 +303,7 @@ export default function HomePage() {
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-pink-200 via-pink-300 to-pink-400 rounded-full blur-3xl opacity-20 -z-10" />
         </section>
 
-        <section className="w-full flex justify-center py-24 px-4 md:px-8 bg-gradient-to-b from-white to-[#fff0f3] relative overflow-hidden">
+        <section className="w-full flex justify-center py-24 px-3 sm:px-4 md:px-8 bg-gradient-to-b from-white to-[#fff0f3] relative overflow-hidden">
           <div className="w-full max-w-[1400px] relative">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
@@ -364,7 +364,7 @@ export default function HomePage() {
           <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-300 via-white/40 to-pink-300 rounded-full blur-3xl opacity-20 -z-10" />
         </section>
 
-        <section className="w-full flex justify-center py-24 px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-pink-100 to-pink-50">
+        <section className="w-full flex justify-center py-24 px-3 sm:px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-pink-100 to-pink-50">
           <div className="w-full max-w-[1400px] relative">
             <div className="grid lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-7 relative z-20">
@@ -451,7 +451,7 @@ export default function HomePage() {
           <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-to-tl from-pink-300 via-white/30 to-pink-500 rounded-full blur-3xl opacity-20 -z-10" />
         </section>
 
-        <section className="w-full flex justify-center py-12 px-4">
+        <section className="w-full flex justify-center py-12 px-3">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
