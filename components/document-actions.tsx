@@ -22,6 +22,10 @@ export default function DocumentActions({ documentId, price, isPurchased = false
   const [loading, setLoading] = useState(false)
   const [purchased, setPurchased] = useState(isPurchased)
   const [viewingDoc, setViewingDoc] = useState(false)
+  
+  // Check if document is free (price = 0)
+  const documentPrice = typeof price === 'string' ? parseFloat(price) : (price || 0)
+  const isFreeDocument = documentPrice === 0
 
   /**
    * View purchased document - Xem tài liệu đã mua
@@ -71,6 +75,7 @@ export default function DocumentActions({ documentId, price, isPurchased = false
   /**
    * Purchase document - Mua tài liệu bằng coin
    * API: POST /api/Student/PurchaseDocument/{studentId}/{documentId}
+   * Response: { success: boolean, message: string }
    */
   const handlePurchase = async () => {
     if (!user) {
@@ -97,18 +102,25 @@ export default function DocumentActions({ documentId, price, isPurchased = false
     setLoading(true)
     try {
       const studentId = user.studentId ?? user.email
-      const resp = await api.purchaseDocument(studentId, String(documentId))
+      const response = await api.purchaseDocument(studentId, String(documentId))
       
-      // Không set purchased = true vì cần đợi admin duyệt
-      toast({
-        title: "Yêu cầu mua tài liệu đã được gửi!",
-        description: "Tài liệu của bạn đang chờ admin phê duyệt. Bạn sẽ nhận được thông báo khi được duyệt.",
-      })
-      
-      // Reload trang sau 2 giây để cập nhật trạng thái
-      setTimeout(() => {
-        window.location.reload()
-      }, 2000)
+      // Check response success
+      if (response.success) {
+        // Mua thành công - set purchased = true
+        setPurchased(true)
+        toast({
+          title: "Mua tài liệu thành công!",
+          description: response.message || "Bạn đã có thể xem tài liệu này.",
+          variant: "default",
+        })
+        
+        // Reload trang sau 1.5 giây để cập nhật trạng thái
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500)
+      } else {
+        throw new Error(response.message || "Mua tài liệu thất bại")
+      }
     } catch (err: any) {
       console.error('Purchase failed', err)
       toast({
@@ -121,8 +133,8 @@ export default function DocumentActions({ documentId, price, isPurchased = false
     }
   }
 
-  // Nếu đã mua hoặc vừa mua xong
-  if (purchased) {
+  // Nếu tài liệu miễn phí hoặc đã mua
+  if (isFreeDocument || purchased) {
     return (
       <div className="space-y-3">
         <Button 
@@ -143,13 +155,13 @@ export default function DocumentActions({ documentId, price, isPurchased = false
           )}
         </Button>
         <p className="text-sm text-center text-muted-foreground">
-          Bạn đã sở hữu tài liệu này
+          {isFreeDocument ? "Tài liệu miễn phí" : "Bạn đã sở hữu tài liệu này"}
         </p>
       </div>
     )
   }
 
-  // Chưa mua - hiển thị button mua
+  // Chưa mua và không miễn phí - hiển thị button mua
   return (
     <div>
       <Button 
