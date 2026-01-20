@@ -6,11 +6,12 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { FeaturedDocuments } from "@/components/featured-documents"
 import { AIChatbot } from "@/components/ai-chatbot"
+import { DocumentListCard } from "@/components/document-list-card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Search, Filter, FileText, Code, BarChart3, BookOpen, Building2, Eye, Loader2 } from "lucide-react"
+import { Search, Filter, FileText, Code, BarChart3, BookOpen, Building2, Eye, Loader2, ChevronLeft, ChevronRight } from "lucide-react"
 import { api } from "@/lib/api"
 import type { Document, DocumentType } from "@/lib/types"
 import Link from "next/link"
@@ -55,6 +56,14 @@ export default function ResourcesPage() {
   const [isSearching, setIsSearching] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
   
+  // Pagination state for all documents
+  const [allDocuments, setAllDocuments] = useState<Document[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
+  const [isLoadingDocuments, setIsLoadingDocuments] = useState(false)
+  const pageSize = 10
+  
   const handleComingSoon = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
       toast({
@@ -63,6 +72,39 @@ export default function ResourcesPage() {
         variant: "coming-soon"
       })
     }
+
+  // Load all documents with pagination
+  const loadDocuments = useCallback(async (page: number) => {
+    setIsLoadingDocuments(true)
+    try {
+      const response = await api.getAllDocuments(page, pageSize)
+      setAllDocuments(response.documents)
+      setCurrentPage(response.pageNumber)
+      setTotalPages(response.totalPages)
+      setTotalCount(response.totalCount)
+    } catch (err) {
+      console.error("Failed to load documents:", err)
+      toast({
+        title: "Lỗi",
+        description: "Không thể tải danh sách tài liệu",
+        variant: "destructive"
+      })
+    } finally {
+      setIsLoadingDocuments(false)
+    }
+  }, [pageSize])
+
+  // Load documents on mount
+  useEffect(() => {
+    loadDocuments(1)
+  }, [loadDocuments])
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      loadDocuments(newPage)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
 
   const performSearch = useCallback(async (keyword: string, updateUrl: boolean = true) => {
     if (!keyword.trim()) {
@@ -236,6 +278,101 @@ export default function ResourcesPage() {
                   <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <p className="text-gray-500 text-lg mb-2">Không tìm thấy tài liệu nào</p>
                   <p className="text-gray-400 text-sm">Thử tìm kiếm với từ khóa khác</p>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* All Documents List with Pagination */}
+        {!hasSearched && (
+          <section className="w-full flex justify-center py-8 px-4 sm:px-10">
+            <div className="w-full max-w-[1100px]">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-foreground mb-2">
+                  Tất cả tài liệu
+                </h2>
+              </div>
+
+              {isLoadingDocuments ? (
+                <div className="flex items-center justify-center py-16">
+                  <Spinner size="lg" />
+                </div>
+              ) : allDocuments.length > 0 ? (
+                <>
+                  <div className="space-y-2 mb-8">
+                    {allDocuments.map((doc) => (
+                      <DocumentListCard key={doc.documentID} document={doc} />
+                    ))}
+                  </div>
+
+                  {/* Pagination Controls */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1 || isLoadingDocuments}
+                        className="h-9"
+                      >
+                        <ChevronLeft className="h-4 w-4 mr-1" />
+                        Trước
+                      </Button>
+
+                      <div className="flex items-center gap-1">
+                        {[...Array(totalPages)].map((_, index) => {
+                          const page = index + 1
+                          // Show first page, last page, current page and adjacent pages
+                          if (
+                            page === 1 ||
+                            page === totalPages ||
+                            (page >= currentPage - 1 && page <= currentPage + 1)
+                          ) {
+                            return (
+                              <Button
+                                key={page}
+                                variant={currentPage === page ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => handlePageChange(page)}
+                                disabled={isLoadingDocuments}
+                                className="h-9 min-w-[36px]"
+                              >
+                                {page}
+                              </Button>
+                            )
+                          } else if (
+                            page === currentPage - 2 ||
+                            page === currentPage + 2
+                          ) {
+                            return (
+                              <span key={page} className="px-2">
+                                ...
+                              </span>
+                            )
+                          }
+                          return null
+                        })}
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages || isLoadingDocuments}
+                        className="h-9"
+                      >
+                        Sau
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-16 bg-white rounded-lg border border-gray-100">
+                  <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500 text-lg mb-2">Chưa có tài liệu nào</p>
+                  <p className="text-gray-400 text-sm">Vui lòng quay lại sau</p>
                 </div>
               )}
             </div>

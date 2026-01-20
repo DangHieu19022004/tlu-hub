@@ -79,6 +79,19 @@ export interface Document {
   viewsCount: number
 }
 
+export interface DocumentListResponse {
+  /** List of documents */
+  documents: Document[]
+  /** Current page number */
+  pageNumber: number
+  /** Page size */
+  pageSize: number
+  /** Total count of documents */
+  totalCount: number
+  /** Total number of pages */
+  totalPages: number
+}
+
 export interface Student {
   /** Student ID */
   studentID: string

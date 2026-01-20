@@ -8,6 +8,7 @@ import type {
   LoginRequestDto,
   LoginResponse,
   Document,
+  DocumentListResponse,
   Student,
   Transaction,
   CreateTransactionRequestDto,
@@ -312,6 +313,17 @@ export const api = {
     return apiFetch<ApiResponse<Document[]>>("/api/Document/search", {
       method: "GET",
       query: { keyword, limit },
+    })
+  },
+
+  /**
+   * Get all documents with pagination
+   * GET /api/Document/all?pageNumber=...&pageSize=...
+   */
+  getAllDocuments: async (pageNumber: number = 1, pageSize: number = 10): Promise<DocumentListResponse> => {
+    return apiFetch<DocumentListResponse>("/api/Document/all", {
+      method: "GET",
+      query: { pageNumber, pageSize },
     })
   },
 
