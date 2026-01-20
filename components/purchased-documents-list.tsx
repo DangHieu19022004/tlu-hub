@@ -140,7 +140,7 @@ export function PurchasedDocumentsList({ documents, studentId, loading = false }
             
             {/* Right side - Price and Actions */}
             <div className="flex flex-col items-end gap-2 flex-shrink-0">
-              <Badge variant="secondary" className="text-sm font-semibold">
+              <Badge variant="outline" className="text-primary font-semibold">
                 {doc.price.toLocaleString("vi-VN")} đ
               </Badge>
               <Button 
@@ -156,7 +156,7 @@ export function PurchasedDocumentsList({ documents, studentId, loading = false }
                   </>
                 ) : (
                   <>
-                    <Download className="h-4 w-4 mr-1" />
+                    <Eye className="h-4 w-4 mr-1" />
                     Xem tài liệu
                   </>
                 )}

@@ -12,12 +12,15 @@ import {
 import { LogOut, User } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
+import { getAvatarByGender } from "@/lib/utils"
 
 interface UserDropdownProps {
   user: {
     name?: string | null
     email?: string | null
     image?: string | null
+    studentId?: string
+    gender?: string
   }
 }
 
@@ -44,11 +47,13 @@ export function UserDropdown({ user }: UserDropdownProps) {
       .slice(0, 2)
   }
 
+  const avatarSrc = getAvatarByGender(user.gender, user.studentId)
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center gap-2 rounded-full focus:outline-none cursor-pointer hover:opacity-80 transition-opacity">
         <Avatar className="h-8 w-8">
-          <AvatarImage src="/avartar/male1.png" />
+          <AvatarImage src={avatarSrc} />
           <AvatarFallback className="bg-primary text-white text-xs">{getInitials(user.name)}</AvatarFallback>
         </Avatar>
         <span className="hidden text-sm font-medium md:inline-block">{user.name || "User"}</span>

@@ -16,6 +16,7 @@ import { useState, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
+import { getAvatarByGender } from "@/lib/utils"
 
 export default function ProfilePage() {
   const { toast } = useToast()
@@ -84,7 +85,7 @@ export default function ProfilePage() {
                   <CardContent className="pt-6">
                     <div className="flex flex-col items-center text-center">
                       <Avatar className="h-24 w-24">
-                        <AvatarImage src={user.image} />
+                        <AvatarImage src={getAvatarByGender(user.gender, user.studentId)} />
                         <AvatarFallback>{user.name?.substring(0, 2).toUpperCase()}</AvatarFallback>
                       </Avatar>
                       <h3 className="mt-4 font-semibold">{user.name}</h3>

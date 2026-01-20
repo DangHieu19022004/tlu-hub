@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
+import { getAvatarByGender } from "@/lib/utils"
 import {
   Mail,
   Wallet,
@@ -164,7 +165,7 @@ export default function ProfilePage() {
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                 <Avatar className="h-24 w-24 border-4 border-primary/20">
-                  <AvatarImage src="/avartar/male1.png" />
+                  <AvatarImage src={getAvatarByGender(user.gender, user.studentId)} />
                   <AvatarFallback className="text-2xl">{user.name[0]}</AvatarFallback>
                 </Avatar>
 
