@@ -46,7 +46,7 @@ export function Footer() {
             </Link>
             <Link
               className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-600 transition-all cursor-pointer"
-              href="#"
+              href="https://www.facebook.com/groups/1041881594753163"
               onClick={handleComingSoon}
               title="Group Facebook"
             >
@@ -54,7 +54,7 @@ export function Footer() {
             </Link>
             <Link
               className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-white hover:bg-pink-500 transition-all cursor-pointer"
-              href="#"
+              href="https://zalo.me/g/ptkmxv029"
               onClick={handleComingSoon}
               title="Zalo"
             >
