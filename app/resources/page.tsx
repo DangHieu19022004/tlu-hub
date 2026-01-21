@@ -181,7 +181,7 @@ export default function ResourcesPage() {
                   <Input
                     type="text"
                     placeholder="Tìm kiếm theo tên tài liệu, môn học, từ khóa..."
-                    className="pl-10 h-12"
+                    className="pl-10 h-12 border-2 border-pink-400"
                     value={searchKeyword}
                     onChange={(e) => setSearchKeyword(e.target.value)}
                     onKeyPress={handleKeyPress}
