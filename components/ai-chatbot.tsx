@@ -17,7 +17,7 @@ interface Message {
   timestamp: Date
 }
 
-const quickQuestions = ["Thông tin về ký túc xá", "Học bổng sinh viên", "Tài liệu môn OOP", "Khóa học miễn phí"]
+const quickQuestions = ["Cách nạp tiền", "Tài liệu môn OOP", "Tài liệu miễn phí"]
 
 export function AIChatbot() {
   const { toast } = useToast()

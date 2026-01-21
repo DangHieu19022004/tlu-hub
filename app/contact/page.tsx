@@ -188,19 +188,6 @@ export default function ContactPage() {
                     </div>
                   </CardContent>
                 </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Giờ Làm Việc</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-gray-600">
-                      <p><strong>Thứ 2 - Thứ 6:</strong> 8:00 - 17:00</p>
-                      <p><strong>Thứ 7:</strong> 8:00 - 12:00</p>
-                      <p><strong>Chủ nhật:</strong> Nghỉ</p>
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
             </div>
           </div>
