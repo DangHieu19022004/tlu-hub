@@ -41,39 +41,8 @@ export function PurchasedDocumentsList({ documents, studentId, loading = false }
   const router = useRouter()
   const [downloadingId, setDownloadingId] = useState<string | null>(null)
 
-  /**
-   * Get document access link - Check quyền truy cập rồi trả về link drive
-   * API: GET /api/Document/access-link?studentId=...&documentId=...
-   * Response: { accessLink: "https://drive.google.com/..." }
-   */
-  const handleViewDocument = async (documentId: string) => {
-    setDownloadingId(documentId)
-    try {
-      const response = await api.getDocumentAccessLink(studentId, documentId)
-      
-      // Backend trả về { accessLink: "..." } hoặc { data: "..." }
-      const link = (response as any).accessLink || response.data
-      
-      if (link) {
-        // Mở link Google Drive trong tab mới
-        window.open(link, "_blank")
-        toast({
-          title: "Thành công",
-          description: "Đang mở tài liệu...",
-        })
-      } else {
-        throw new Error("Không nhận được link tài liệu")
-      }
-    } catch (error: any) {
-      console.error("Failed to get document access link:", error)
-      toast({
-        title: "Lỗi",
-        description: error.message || "Không thể mở tài liệu. Vui lòng thử lại sau.",
-        variant: "destructive",
-      })
-    } finally {
-      setDownloadingId(null)
-    }
+  const handleViewDocument = (documentId: string) => {
+    router.push(`/document-detail/${documentId}`)
   }
 
   if (loading) {
@@ -147,19 +116,9 @@ export function PurchasedDocumentsList({ documents, studentId, loading = false }
                 size="sm" 
                 className="w-full min-w-[120px] bg-primary hover:bg-primary/90"
                 onClick={() => handleViewDocument(doc.id)}
-                disabled={downloadingId === doc.id}
               >
-                {downloadingId === doc.id ? (
-                  <>
-                    <ButtonSpinner className="mr-1" />
-                    Đang mở...
-                  </>
-                ) : (
-                  <>
-                    <Eye className="h-4 w-4 mr-1" />
-                    Xem tài liệu
-                  </>
-                )}
+                <Eye className="h-4 w-4 mr-1" />
+                Xem tài liệu
               </Button>
             </div>
           </div>

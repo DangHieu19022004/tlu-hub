@@ -42,34 +42,7 @@ export default function DocumentActions({ documentId, price, isPurchased = false
       return
     }
 
-    setViewingDoc(true)
-    try {
-      const studentId = user.studentId ?? user.email
-      const response = await api.getDocumentAccessLink(studentId, String(documentId))
-      
-      // Backend trả về { accessLink: "..." }
-      const link = (response as any).accessLink || response.data
-      
-      if (link) {
-        // Mở link Google Drive trong tab mới
-        window.open(link, "_blank")
-        toast({
-          title: "Đang mở tài liệu",
-          description: "Tài liệu sẽ mở trong tab mới",
-        })
-      } else {
-        throw new Error("Không nhận được link tài liệu")
-      }
-    } catch (error: any) {
-      console.error("Failed to get document access link:", error)
-      toast({
-        title: "Lỗi",
-        description: error.message || "Không thể mở tài liệu. Vui lòng thử lại sau.",
-        variant: "destructive",
-      })
-    } finally {
-      setViewingDoc(false)
-    }
+    router.push(`/document-detail/${documentId}`)
   }
 
   /**
