@@ -27,12 +27,14 @@ import {
   DollarSign,
   Shield,
   ChevronRight,
-  Home
+  Home,
+  ExternalLink,
+  Maximize
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect, useState, useRef } from "react"
 import { api } from "@/lib/api"
 import type { Document, DocumentType, AccessLevel } from "@/lib/types"
 import { useAuth } from "@/lib/auth-context"
@@ -109,6 +111,7 @@ const formatPrice = (price?: number): string => {
 
 export default function DocumentDetailPage() {
   const params = useParams()
+  const router = useRouter()
   const documentId = params.id as string
   const { user } = useAuth()
   const { toast } = useToast()
@@ -120,6 +123,16 @@ export default function DocumentDetailPage() {
   const [error, setError] = useState<string | null>(null)
   const [isPurchased, setIsPurchased] = useState(false)
   const [userBalance, setUserBalance] = useState(0)
+  const [iframeLoading, setIframeLoading] = useState(true)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+
+  const handleFullscreen = () => {
+    if (iframeRef.current) {
+      if (iframeRef.current.requestFullscreen) {
+        iframeRef.current.requestFullscreen()
+      }
+    }
+  }
 
   const handleShare = async () => {
     try {
@@ -306,17 +319,87 @@ export default function DocumentDetailPage() {
             {/* Left Column - Document Preview & Details */}
             <div className="lg:col-span-2 space-y-6">
               {/* Document Preview Card */}
-              <Card className="overflow-hidden shadow-lg border-border">
-                <CardContent className="p-0">
-                  <div className="relative aspect-[16/9] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-xl">
-                        <DocIcon className="w-12 h-12 text-primary" />
-                      </div>
-                      <p className="text-foreground text-lg font-semibold mb-1">Xem trước tài liệu</p>
-                      <p className="text-muted-foreground text-sm">Mua tài liệu để xem toàn bộ nội dung</p>
-                    </div>
+              <Card className="overflow-hidden shadow-lg border-border relative">
+                {/* Toolbar */}
+                <div className="flex items-center justify-between bg-white border-b border-slate-200 px-4 h-12">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-slate-700">Xem trước tài liệu</span>
+                    <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-0">2 trang đầu</Badge>
                   </div>
+                  <Button 
+                    size="sm" 
+                    className="bg-primary hover:bg-primary/90 text-white h-8"
+                    onClick={() => router.push(`/document-detail/${documentId}`)}
+                  >
+                    Xem tài liệu
+                  </Button>
+                </div>
+                
+                {/* Iframe embed (Clipped to ~2 pages) */}
+                <CardContent className="p-0 relative bg-slate-100 flex flex-col">
+                  {document.storageLink ? (
+                    <>
+                      {/* Clipping container */}
+                      <div className="w-full relative overflow-hidden" style={{ height: '1684px' }}>
+                        {iframeLoading && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-slate-100 z-10">
+                            <div className="text-center">
+                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3"></div>
+                              <p className="text-sm text-slate-500">Đang tải bản xem trước...</p>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* A4 page in Google Drive preview ≈ 842px tall at default zoom
+                            Container height 1684px ≈ shows ~2 full pages
+                            Iframe height 2400px ensures it loads fully and passes the clip */}
+                        <iframe
+                          src={document.storageLink}
+                          className="w-full border-none block"
+                          style={{ height: '2400px', pointerEvents: 'none' }}
+                          allow="autoplay"
+                          onLoad={() => setIframeLoading(false)}
+                        />
+                        
+                        {/* Gradient Overlay at the bottom of the clip area */}
+                        <div 
+                          className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none"
+                          style={{ 
+                            height: '180px',
+                            background: 'linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.6) 40%, rgba(255, 255, 255, 0.95) 100%)' 
+                          }}
+                        />
+                      </div>
+
+                      {/* CTA Section below the clip */}
+                      <div className="text-center p-6 bg-white border-t border-slate-200">
+                        <div className="flex justify-center mb-3">
+                          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Eye className="w-6 h-6 text-primary" />
+                          </div>
+                        </div>
+                        <p className="text-slate-600 font-medium mb-4">
+                          Đây là bản xem trước. Nhấn bên dưới để xem toàn bộ tài liệu.
+                        </p>
+                        <Button 
+                          size="lg" 
+                          className="bg-primary hover:bg-primary/90 text-white w-full max-w-sm mx-auto cursor-pointer"
+                          onClick={() => router.push(`/document-detail/${documentId}`)}
+                        >
+                          Xem toàn bộ tài liệu
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
+                      <div className="text-center">
+                        <div className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-xl">
+                          <DocIcon className="w-12 h-12 text-primary" />
+                        </div>
+                        <p className="text-slate-500">Tài liệu không có sẵn để xem trước</p>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
