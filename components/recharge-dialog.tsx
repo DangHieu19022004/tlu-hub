@@ -37,7 +37,7 @@ export function RechargeDialog({ studentId, onSuccess, onCancel }: RechargeDialo
    */
   const handleRecharge = async () => {
     const amountNum = parseFloat(amount)
-    
+
     if (!amountNum || amountNum <= 0) {
       toast({
         title: "Số tiền không hợp lệ",
@@ -59,14 +59,14 @@ export function RechargeDialog({ studentId, onSuccess, onCancel }: RechargeDialo
     setLoading(true)
     try {
       await api.rechargeAccount(studentId, amountNum)
-      
+
       setSubmitted(true)
       toast({
         title: "Gửi yêu cầu nạp tiền thành công!",
         description: "Yêu cầu của bạn đang được xử lý. Vui lòng chờ xác nhận từ quản trị viên.",
         duration: Infinity,
       })
-      
+
       // Gọi callback success để refresh data
       onSuccess?.()
     } catch (err: any) {
@@ -125,7 +125,7 @@ export function RechargeDialog({ studentId, onSuccess, onCancel }: RechargeDialo
                   Số tiền: <strong>{formatCurrency(parseFloat(amount))}</strong>
                 </p>
                 <p className="text-xs text-blue-600 mt-2">
-                  Quản trị viên sẽ xác nhận giao dịch trong vòng 24h. 
+                  Quản trị viên sẽ xác nhận giao dịch trong vòng 24h.
                   Vui lòng kiểm tra email hoặc số dư tài khoản của bạn.
                 </p>
               </div>
@@ -214,8 +214,8 @@ export function RechargeDialog({ studentId, onSuccess, onCancel }: RechargeDialo
           <div className="space-y-2 text-xs text-muted-foreground">
             <p>1. Chuyển khoản đến:</p>
             <div className="pl-4 space-y-1">
-              <p>• Ngân hàng: <strong>Vietcombank</strong></p>
-              <p>• Số TK: <strong>1234567890</strong></p>
+              <p>• Ngân hàng: <strong>NCB</strong></p>
+              <p>• Số TK: <strong>9704198526191432198</strong></p>
               <p>• Chủ TK: <strong>TLU Hub</strong></p>
             </div>
             <p>2. Nội dung: <strong>NAPTIEN {studentId}</strong></p>
@@ -238,9 +238,9 @@ export function RechargeDialog({ studentId, onSuccess, onCancel }: RechargeDialo
         <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
           Hủy
         </Button>
-        <Button 
+        <Button
           type="button"
-          onClick={handleRecharge} 
+          onClick={handleRecharge}
           disabled={loading || !amount || parseFloat(amount) < 10000}
           className="flex-1"
         >
